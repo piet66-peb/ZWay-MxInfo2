@@ -1,0 +1,56 @@
+//h               Chart.js | Open source HTML5 Charts
+//h               Author: Nick Downie
+//h               www.chartjs.org, https://github.com/chartjs/Chart.js 
+//h               Download: https://github.com/chartjs/Chart.js/releases/latest/
+//h               License: MIT License, http://opensource.org/licenses/MIT
+
+//h               cola.min.js | WebCola high-quality graph visualization
+//h               Author: Tim Dwyer
+//h               https://github.com/tgdwyer/WebCola
+//h               License: MIT License, http://opensource.org/licenses/MIT
+
+//h               Cytoscape.js | visualizing complex networks
+//h               http://www.cytoscape.org/
+//h               http://js.cytoscape.org/#cy.$ (docu)
+//h               https://github.com/cytoscape/cytoscape.js 
+//h               https://cytoscape.github.io/cytoscape.js-tutorial-demo/
+//h               http://blog.js.cytoscape.org/2016/05/24/getting-started/
+//h               License: MIT License, http://opensource.org/licenses/MIT
+
+//h               cytoscape-cola.js | The Cola.js physics simulation layout for Cytoscape.js
+//h               https://github.com/cytoscape/cytoscape.js-cola
+//h               License: MIT License, http://opensource.org/licenses/MIT
+
+//h               cytoscape-context-menus.js | Context menu  for Cytoscape.js
+//h               https://github.com/iVis-at-Bilkent/cytoscape.js-context-menus
+//h               License: MIT License, http://opensource.org/licenses/MIT
+
+//h               cytoscape-cose-bilkent.js | The CoSE layout for Cytoscape.js 
+//h               https://github.com/cytoscape/cytoscape.js-cose-bilkent
+//h               License: MIT License, http://opensource.org/licenses/MIT
+
+//h               jquery.json-viewer.js | jQuery json-viewer
+//h               Original software:
+//h               Author: Alexandre Bodelot
+//h               https://github.com/abodelot/jquery.json-viewer 
+//h               License: MIT License, http://opensource.org/licenses/MIT
+//h               Enhanced: 2020-07-21/peb
+
+//h               tail.DateTime | date/time picker
+//h               Author: pytesNET
+//h               https://github.com/pytesNET/tail.DateTime
+//h               License: MIT License, http://opensource.org/licenses/MIT
+
+//h               SortTable | sort html tables
+//h               Author: Stuart Langridge
+//h               http://www.kryogenix.org/code/browser/sorttable/
+//h               License: MIT License, http://opensource.org/licenses/MIT
+
+//h               jQuery
+//h               https://jquery.org/
+//h               License: MIT License, http://opensource.org/licenses/MIT
+
+//h               moment | Parse and display dates in any timezone
+//h               https://momentjs.com/
+//h               https://github.com/moment/moment/
+//h               License: MIT License, http://opensource.org/licenses/MIT

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+       <meta charset="utf-8">
+      <title>Communication.html</title>
+      <link rel="shortcut icon" href="/ZAutomation/api/v1/load/modulemedia/MxInfo2/icon.png">
+
+      <script src="libs/jquery.min.js"></script>
+      <script src="libs/moment.min.js"></script>
+      <script src="libs/Chart.min.js"></script>
+      <!-- mouse zoom doesn't work, conflict with overview scroll
+      <script src="libs/hammer.min.js"></script>
+      <script src="libs/chartjs-plugin-zoom.min.js"></script> -->
+
+      <link rel="stylesheet" type="text/css" href="css/jquery.json-viewer.css"/>
+      <script src='libs/jquery.json-viewer.min.js'></script>
+      <link type="text/css" rel="stylesheet" href="css/tail.datetime-default-red.css" />
+      <script src="libs/tail.datetime.min.js"></script>
+      <script src="libs/tail.datetime-all.min.js"></script>
+      <script src="libs/sorttable.min.js"></script>
+      <script src='js/ch_utils.js' charset="utf-8"></script>
+      <script src='js/Communication.html.js' charset="utf-8"></script>
+
+      <style type="text/css">
+         body {
+             margin: 0 3%;
+             font-family: sans-serif;
+             height: 100%;
+         }
+         pre#json-renderer {
+             border: 1px solid #aaa;
+             padding: 0.5em 1.5em;
+             overflow: scroll;
+             height: calc(100vh - 300px)
+         }
+      </style>
+
+      <!-- headline or sortable tables -->
+      <style type="text/css">
+        table.sortable thead th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after {
+            content: " \25B4\25BE"
+        }
+      </style>
+
+      <style type="text/css">
+         table {
+         width: 95%;
+         }
+         th {
+         background-color: #666;
+         color: #fff;
+         }
+         tr {
+         background-color: #fffbf0;
+         color: #000;
+         }
+         tr:nth-child(odd) {
+         background-color: #e4ebf2;
+         }
+         tr:hover {
+         background-color: #dfac20;
+         color: #fff;
+         }
+      </style>
+
+      <style>
+        /* position buttons */
+        .left_right {
+        width:100%;
+        display:inline-block;
+        overflow: auto;
+        white-space: nowrap;
+        }
+      </style>
+
+   </head>
+   <body>
+      <header>
+      <label id="label1">Sources:</label>
+      <button id="zway_originPacketsjson" style="display: none;">zwayoriginPackets.json</button>
+      <button id="zway_parsedPacketsjson" style="display: none;">zwayparsedPackets.json</button>
+
+      <label id="label5">Examination:</label>
+      <button id="showRange">showRange</button>
+      <button id="update">update</button>
+      <label id="textRefresh">Auto</label>
+      <input type="checkbox" id="refreshCheckbox">
+      <label id="textSkip">SkipMultiples</label>
+      <input type="checkbox" id="skipCheckbox">
+      <br>
+      <button id="statistics">Statistics</button>
+      <button id="statisticsPerHour">statisticsPerHour</button>
+      <button id="statisticsPerHourNode">statisticsPerHourNode</button>
+      <button id="statisticsPerCommand">statisticsPerCommand</button>
+      <button id="statisticsPerCommandNode">statisticsPerCommandNode</button>
+      <button id="multiples">Multiples</button>
+      <button id="differences">Differences</button>
+      <hr>
+
+      <label id="label2">Time from:</label>
+      <input type="text" id="datetime_from" class="datetime_from" name="datetime_from" />
+      <label id="label3">to:</label>
+      <input type="text" id="datetime_to" class="datetime_to" name="datetime_to" />
+      <label id="label6">Count:</label>
+      <input type="number" id="maxRecords" min="1">
+      <br>
+      <label id="label4">selNodeId:</label>
+      <select name="selNodeId" id="selNodeId"></select><wbr/>
+      <label id="label7">Count:</label>
+      <input type="text" id="selText" size="40">
+      <label id="textRegex">Regex</label>
+      <input type="checkbox" id="checkboxRegex">
+      <label id="textInvert">Regex</label>
+      <input type="checkbox" id="checkboxInvert">
+      <hr>
+      <label id="labelDevice">Gerät:</label>
+      <select name="selDevice" id="selDevice"></select>
+      <button id="graphDevice">Graphics</button>
+      <hr>
+
+      <div class='left_right'>
+      <div style='float:left;'>
+      <div id="notification">
+         <div id="notification-message">Reading script file...</div>
+      </div>
+      </div>
+      <div style='float:right; display: none;' id="toLeftRight">
+          <button style="height:30px" type="button" id="toLeft"><b>&lt;&lt;</b></button>
+          <button style="height:30px" type="button" id="toRight"><b>&gt;&gt;</b></button>
+      </div>
+       </div>
+      </header>
+
+      <pre id="json-renderer" style='display: none;'></pre>
+      <div style="width:100%">
+         <canvas id="canvas" style="display: none;"></canvas>
+      </div>
+
+   </body>
+</html>
+

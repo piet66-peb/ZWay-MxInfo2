@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta charset="utf-8">
+      <title>ZWay Konfiguration</title>
+      <link rel="shortcut icon" href="/ZAutomation/api/v1/load/modulemedia/MxInfo2/icon.png">
+
+      <style type="text/css">
+        .fog_div {
+          display: none;
+          position: fixed;
+          top: 0px;
+          left: 0px;
+          height: 100%;
+          width: 100%;
+          z-index: 100;
+          background-color: rgba(30, 30, 30, 0.5);
+        }
+      </style>
+      <script src="libs/jquery.min.js"></script>
+
+      <link rel="stylesheet" type="text/css" href="css/jquery.json-viewer.css"/>
+      <style type="text/css">
+         body {
+             margin-top: 0;
+             margin-right: 1.5%;
+             margin-left: 2.5%;             
+             font-family: sans-serif;
+         }
+         pre#json-renderer1 {
+             width: 49.5%;
+             float: left;
+             border: 1px solid #aaa;
+             padding: 0.5em 1.5em;
+             overflow: scroll;
+             height: calc(100vh - 140px);
+             box-sizing: border-box;
+         }
+         pre#json-renderer2 {
+             width: 49.5%;
+             float: right;
+             border: 1px solid #aaa;
+             padding: 0.5em 1.5em;
+             overflow: scroll;
+             height: calc(100vh - 140px);
+             box-sizing: border-box;
+         }
+      </style>
+      <script src='libs/jquery.json-viewer.min.js'></script>
+      <script src='js/ch_utils.js' charset="utf-8"></script>
+      <script src='js/ZwayConfiguration.html.js' charset="utf-8"></script>
+
+   </head>
+   <body>
+      <div id="all">
+      <label id="label2">Gerätetitel:</label>
+      <select name="selDevTitle" id="selDevTitle"></select>
+      <div style='float: right;'>
+      <label id="textCollapse">Collapse</label>
+      <input type="checkbox" id="collapseCheckbox">
+      </div>
+      <hr>
+      <div id="notification">
+         <div id="notification-message">Reading script file...</div>
+      </div>
+      <pre id="json-renderer1"></pre>
+      <pre id="json-renderer2"></pre>
+      </div>
+   </body>
+</html>
+

@@ -1,0 +1,50 @@
+--------------------------------------------------------------------------------------------
+ZWay API issues calling from 
+http://IP:8083/ZAutomation/api/v1/load/modulemedia/<module>/...
+--------------------------------------------------------------------------------------------
+ZWay Version V3.2.3
+
+Issues
+======
+1. charset="utf-8:
+   Ä Ö Ü ä ö ü are displayed as Ã Ã Ã Ã¤ Ã¶ Ã¼
+   The server ignores the utf-8 directive in meta tag as well as in
+   script tag.
+   >> workaround: transcode all texts in javascript 
+
+2. return folder contents:
+   calling a path without file.html and no index.html (/ or not at end):
+   empty folder contents returned
+   >> unable to dynamically create tools index, unable to search for special icons
+   >> workaround: use fixed file list
+
+3. looking for default index.html, if only path given:
+   /ZAutomation/api/v1/load/modulemedia/<module> and
+   /ZAutomation/api/v1/load/modulemedia/<module>/
+   returns 'Not Found'
+
+4. looking for default index.html, if only path given:
+   /ZAutomation/api/v1/load/modulemedia/<module>/<subfolder> (no slash at end)
+   index.html is found but called with wrong working directory
+   >>workaround: set absolute path with base tag in index.html
+
+5. Basic Authentication:
+   Enters the user wrong login data (or no login data) ZWay answeres with 401
+   (not authorized) but without 'WWW-Authenticate' header.
+   Result: The browser stores the wrong login data for further use. The user
+   has no chance for correction any more.
+   also SmarthomeUI login doesn't work any more (in Firefox).
+
+--------------------------------------------------------------------
+RFC 7235, page 4:
+Upon receipt of a request for a protected resource that omits
+credentials, contains invalid credentials (e.g., a bad password) or
+partial credentials (e.g., when the authentication scheme requires
+more than one round trip), an origin server SHOULD send a 401
+(Unauthorized) response that contains a WWW-Authenticate header field with 
+at least one (possibly new) challenge applicable to the requested resource.
+--------------------------------------------------------------------
+ 
+6. session cookies:
+   At tab change sometimes ZWAYSession is emptied: ZWAYSession = ''
+ 

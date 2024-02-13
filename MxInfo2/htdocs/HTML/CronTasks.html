@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta charset="utf-8">
+      <title>Cron Tasks</title>
+      <link rel="shortcut icon" href="/ZAutomation/api/v1/load/modulemedia/MxInfo2/icon.png">
+
+      <script src="libs/jquery.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="css/jquery.json-viewer.css"/>
+      <script src='libs/jquery.json-viewer.min.js'></script>
+
+      <script src='js/ch_utils.js' charset="utf-8"></script>
+      <script src='js/CronTasks.html.js' charset="utf-8"></script>
+
+      <style type="text/css">
+         body {
+             margin: 0 3%;
+             font-family: sans-serif;
+         }
+         pre#json-renderer {
+             border: 1px solid #aaa;
+             padding: 0.5em 1.5em;
+             overflow: scroll;
+             height: calc(100vh - 160px)
+         }
+      </style>
+
+      <style>
+         #cy {
+             width: 100%;
+             height: 90%;
+             position: absolute;
+             left: 0px;
+         }
+      </style>
+      <style type="text/css">
+         table {
+         width: 95%;
+         }
+         th {
+         background-color: #666;
+         color: #fff;
+         }
+         tr {
+         background-color: #fffbf0;
+         color: #000;
+         }
+         tr:nth-child(odd) {
+         background-color: #e4ebf2;
+         }
+         tr:hover {
+         background-color: #dfac20;
+         color: #fff;
+         }
+      </style>
+
+   </head>
+   <body>
+      <button id="cron_module">Cron Modul</button>
+      <button id="no_creator_tasks">Tasks without Creator</button>
+      <button id="cron_tasks">Cron Tasks</button>
+      <button id="instance_tasks">Instance Tasks</button>
+      <button id="next_fire">Next</button>
+      <button id="next_fire_per_inst">Fire per Instance</button>
+      <hr>
+      <form action="#" >
+	  <label id="label2">Instanz:</label>
+          <select name="instance" id="selInstance"></select>
+      </form>
+      <hr>
+
+      <div id="notification">
+         <div id="notification-message">Reading script file...</div>
+      </div>
+
+      <!--<pre id="json-renderer"></pre>-->
+
+   </body>
+</html>
+

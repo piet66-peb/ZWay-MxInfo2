@@ -1,0 +1,12 @@
+Chart.min.js                  2.8.0
+cola.min.js                   3.3.8
+cytoscape.min.js              3.3.0
+cytoscape-cola.js             2.2.3
+cytoscape-context-menus.js    3.0.6
+cytoscape-cose-bilkent.js     4.0.0
+jquery.min.js                 3.3.1
+jquery.json-viewer.js         1.2       enhanced: 2020-07-21/peb
+tail.datetime.js              0.4.14 - Beta
+SortTable                     2
+wickedpicker.js               0.4.1
+moment.js                     2.29.1

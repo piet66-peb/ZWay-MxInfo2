@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta charset="utf-8">
+      <title>BatteryStates</title>
+      <link rel="shortcut icon" href="/ZAutomation/api/v1/load/modulemedia/MxInfo2/icon.png">
+
+      <script src='js/ch_utils.js' charset="utf-8"></script>
+      <script src='js/BatteryStates.html.js' charset="utf-8"></script>
+
+      <style type="text/css">
+         body {
+             margin: 0 3%;
+             font-family: sans-serif;
+         }
+         pre#json-renderer {
+             float: left;
+             border: 0px solid #aaa;
+             padding: 0.5em 1.5em;
+         }
+      </style>
+
+      <style type="text/css">
+         table {
+         }
+         th {
+         background-color: #666;
+         color: #fff;
+         }
+         tr {
+         background-color: #fffbf0;
+         color: #000;
+         }
+         tr:nth-child(odd) {
+         background-color: #e4ebf2;
+         }
+         tr:hover {
+         background-color: #dfac20;
+         color: #fff;
+         }
+      </style>
+
+   </head>
+   <body>
+       <br>
+      <div id="notification">
+         <div id="notification-message">Reading script file...</div>
+      </div>
+      <input type="text" id="myInput" onkeyup="myFunction()" 
+       placeholder="Search for names.."><br>
+      <pre id="json-renderer"></pre>
+
+      <script>
+        function myFunction() {
+          var input, filter, table, tr, td, i, txtValue, doDisp;
+          input = document.getElementById("myInput");
+          filter = input.value.toUpperCase();
+          table = document.getElementById("indextable");
+          tr = table.getElementsByTagName("tr");
+          for (i = 1; i < tr.length; i++) {
+              doDisp = 0;
+              for (j = 1; j < 4; j++) {
+                  td = tr[i].getElementsByTagName("td")[j];
+                  if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                      doDisp += 1;
+                    }
+                  }   
+              }
+                  if (doDisp) {
+                    tr[i].style.display = "";
+                  } else {
+                    tr[i].style.display = "none";
+                  }
+          }
+        }
+      </script>
+
+   </body>
+</html>
+

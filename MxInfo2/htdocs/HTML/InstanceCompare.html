@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta charset="utf-8">
+      <title>InstanceCompare</title>
+      <link rel="shortcut icon" href="/ZAutomation/api/v1/load/modulemedia/MxInfo2/icon.png">
+
+      <script src="libs/jquery.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="css/jquery.json-viewer.css"/>
+      <script src='libs/jquery.json-viewer.min.js'></script>
+      <script src='js/ch_utils.js' charset="utf-8"></script>
+      <script src='js/InstanceCompare.html.js' charset="utf-8"></script>
+
+      <style type="text/css">
+         body {
+             margin-top: 0;
+             margin-right: 1.5%;
+             margin-left: 2.5%;             
+             font-family: sans-serif;
+         }
+         pre#json-renderer1 {
+             width: 49.5%;
+             float: left;
+             border: 1px solid #aaa;
+             padding: 0.5em 1.5em;
+             overflow: scroll;
+             height: calc(100vh - 160px);
+             box-sizing: border-box;
+         }
+         pre#json-renderer2 {
+             width: 49.5%;
+             float: right;
+             border: 1px solid #aaa;
+             padding: 0.5em 1.5em;
+             overflow: scroll;
+             height: calc(100vh - 160px);
+             box-sizing: border-box;
+         }
+      </style>
+    
+      <style type="text/css">
+         table, th,td {
+         border: 1px solid silver;
+         border-collapse: collapse;
+         }
+         table {
+         width: 100%;
+         }
+         th {
+         background-color: #666;
+         color: #fff;
+         }
+         tr {
+         background-color: #fffbf0;
+         color: #000;
+         }
+         tr:nth-child(odd) {
+         background-color: #e4ebf2;
+         }
+         tr:hover {
+         background-color: #dfac20;
+         color: #fff;
+         }
+      </style>
+    
+      <style>
+        /* position buttons */
+        .left_right {
+        width:100%;
+        display:inline-block;
+        overflow: auto;
+        white-space: nowrap;
+        }
+      </style>
+   
+      <style>
+        @media print {
+        .pagebreak { page-break-before: always; } /* page-break-after works, as well */
+        }
+      </style>
+   </head>
+   <body>
+       <div id="all">
+       <div id="title1">Modul-Instanzen</div>
+       <div class='left_right'>
+           <div style='float: left;'>
+                <label id="selModulesLabel">selModulesLabel:</label>
+                <select name="selModules" id="selModules"></select>
+           </div>
+           <div style='float: right;'>
+               <button type="button" id="Print">Print</button>
+           </div>
+       </div>
+      <br>
+	  <label id="selInstance1Label">selInstance1Label:</label>
+      <select name="selInstance1" id="selInstance1"></select>
+      <button id="configuration1">Config</button>
+	  <label id="selInstance2Labe">selInstance2Label:</label>
+      <select name="selInstance2" id="selInstance2"></select>
+      <button id="configuration2">Config</button>
+      <hr>
+
+      <div id="notification">
+         <div id="notification-message">Reading script file...</div>
+      </div>
+
+      <pre id="json-renderer1"></pre>
+      <pre id="json-renderer2"></pre>
+       </div>
+
+   </body>
+</html>
+

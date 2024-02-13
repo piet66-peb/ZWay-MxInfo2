@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+       <meta charset="utf-8">
+      <title>Config.json Geräte</title>
+      <link rel="shortcut icon" href="/ZAutomation/api/v1/load/modulemedia/MxInfo2/icon.png">
+
+      <script src="libs/jquery.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="css/jquery.json-viewer.css"/>
+      <script src='libs/jquery.json-viewer.min.js'></script>
+
+      <script src='js/ch_utils.js' charset="utf-8"></script>
+      <script src='js/ConfigJson.html.js' charset="utf-8"></script>
+
+      <style type="text/css">
+         body {
+             margin: 0 3%;
+             font-family: sans-serif;
+         }
+         pre#json-renderer {
+             border: 1px solid #aaa;
+             padding: 0.5em 1.5em;
+             overflow: scroll;
+             height: calc(100vh - 180px)
+         }
+      </style>
+
+      <style>
+         #cy {
+             width: 100%;
+             height: 90%;
+             position: absolute;
+             left: 0px;
+         }
+      </style>
+
+   </head>
+   <body>
+          <label id="label1">Überprüfung:</label>
+          <button id="config_json">Config.json</button>
+          <button id="config_json_devices">Config.json Geräte</button>
+          <button id="used_devices">Geräte in Gebrauch</button>
+          <button id="old_devices">Alte Geräte</button>
+          <button id="new_devices">Neue Geräte</button>
+      <hr>
+          <label id="label2">Bereinigung:</label>
+          <button id="reload_config_json" style="display: none;">Config.json Neuladen</button>
+          <button id="delete_old_devices" style="display: none;">Alte Geräte Löschen</button>
+          <button id="download_new_config" style="display: none;">Download neue Config.json</button>
+          <button id="store_old_devices">Liste alte Geräte speichern</button>
+      <hr>
+
+      <div id="notification">
+         <div id="notification-message">Reading script file...</div>
+      </div>
+
+      <!--<pre id="json-renderer"></pre>-->
+
+   </body>
+</html>
+

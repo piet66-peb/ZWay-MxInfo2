@@ -1,0 +1,9 @@
+Icon:    module_active.png, module_inactive.png
+Source:  https://upload.wikimedia.org/wikipedia/commons/9/90/Wiki-tech-logo-js.svg
+License: gemeinfrei
+
+Icon:    missing_devices.png
+Source:  https://upload.wikimedia.org/wikipedia/commons/f/ff/%21icon.png
+License: Creative Commons Attribution-Share Alike 4.0 International license
+
+The icons may be converted and colors changed.

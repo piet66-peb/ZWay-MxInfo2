@@ -1,0 +1,16 @@
+BatteryStates.html              Liste der historischen und aktuelle Ladezustände
+Communication.html              Analyse der Z-Wave Kommunikation
+ConfigJson.html                 Inhalt der config.json, Entfernen alter virtueller Geräte
+CronTasks.html                  Liste der Z-Way Crontasks mit nächstem Zeitpunkt
+DataRates.html                  Statistik über verwendete Z-Wave Datenraten
+Dependencies.html               Abhängigkeiten Geräte <> Modulinstanzen mit grafischer Darstellung
+DeviceParameters.html           Administration und Dokumentation von Z-Wave Geräteparametern
+Devices.html                    Liste aller virtuellen Geräte
+index.html
+InstanceCompare.html            Anzeige, Vergleich und Dokumentation von Modulinstanzen
+Instances.html                  Liste aller Modulinstanzen, Aktivierung und Deaktivierung
+MxLogging.html                  Liste aller Mx-Modulinstanzen, Ein-/Ausschalten des Loggings
+Readme.html
+Routes.html                     Analyse der möglichen und verwendeten Z-Wave Routen
+Security.html                   Liste der sicher inkludierten Z-Wave Geräte
+ZwayConfiguration.html          Die gespeicherte Konfiguration aller Z-Wave Geräte

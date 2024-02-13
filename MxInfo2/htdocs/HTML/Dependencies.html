@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta charset="utf-8">
+      <title>Z-Way Abh&auml;ngigkeiten</title>
+      <link rel="shortcut icon" href="/ZAutomation/api/v1/load/modulemedia/MxInfo2/icon.png">
+
+      <script src="libs/jquery.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="css/jquery.json-viewer.css"/>
+      <script src='libs/jquery.json-viewer.min.js'></script>
+      <script src="libs/cytoscape.min.js"></script>
+      <script src="libs/cola.min.js"></script>
+      <script src="libs/cytoscape-cola.min.js"></script>
+      <script src="libs/cytoscape-cose-bilkent.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="css/cytoscape-context-menus.css"/>
+      <script src="libs/cytoscape-context-menus.min.js"></script>
+
+      <script src='js/ch_utils.js' charset="utf-8"></script>
+      <script src='js/Dependencies.html.js' charset="utf-8"></script>
+
+      <style type="text/css">
+         body {
+             margin: 0 3%;
+             font-family: sans-serif;
+         }
+         pre#json-renderer {
+             border: 1px solid #aaa;
+             padding: 0.5em 1.5em;
+             overflow: scroll;
+             height: calc(100vh - 230px)
+         }
+      </style>
+
+      <style>
+         #cy {
+             width: 100%;
+             height: 90%;
+             position: absolute;
+             left: 0px;
+         }
+      </style>
+
+   </head>
+   <body>
+      <button id="devices">Ger&auml;te</button>
+      <button id="deviceTree">Ger&auml;tebaum</button>
+      <button id="revDeviceTree">Reverser Ger&auml;tebaum</button>
+
+      <button id="modules">Module</button>
+      <button id="modulesDevices">modulesDevices</button>
+
+      <button id="instances">Instanzen</button>
+      <button id="instanceTree">Instanzenbaum</button>
+      <button id="revInstanceTree">Reverser Instanzenbaum</button>
+      <button id="inactiveInstances">Inaktive Instanzen</button>
+
+      <button id="allDevices">allDevices</button>
+      <button id="orphanedDevices">orphanedDevices</button>
+      <button id="missingDevices">missingDevices</button>
+      <button id="nocreatorDevices">nocreatorDevices</button>
+      <button id="wrongcreatorDevices">wrongcreatorDevices</button>
+      <button id="failedDevices">failedDevices</button>
+      <button id="hiddenDevices">hiddenDevices</button>
+      <button id="multiCreatedDeviceIds">multiCreatedDeviceIds</button>
+      <button id="inactiveDeviceIds">inactiveDeviceIds</button>
+
+      <button id="graph">Grafik</button>
+      <button id="graphJSON">JSON</button>
+      <button id="graphTXT">Liste</button>
+      <button id="graphTXTStore">Speichern</button>
+      <hr>
+          <label id="label1">Gerät:</label>
+          <select name="devices" id="selDevice"></select>
+	  <label id="label2">Instanz:</label>
+          <select name="instances" id="selInstance"></select>
+      <hr>
+
+      <div id="notification">
+         <div id="notification-message">Reading script file...</div>
+      </div>
+
+      <!--<pre id="list"></pre>-->
+      <!--<pre id="json-renderer"></pre>-->
+      <!--<div id="cy"></div>-->
+
+   </body>
+</html>
+
