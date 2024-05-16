@@ -11,7 +11,7 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V1.0 2023-12-17/peb
+//h Version:      V1.0 2024-02-21/peb
 //v History:      V1.0 2023-10-07/peb first version
 //h Copyright:    (C) piet66 2020
 //h License:      http://opensource.org/licenses/MIT
@@ -27,7 +27,7 @@
 //-----------
 var MODULE='MxLogging.html.js';
 var VERSION='V1.0';
-var WRITTEN='2023-12-17/peb';
+var WRITTEN='2024-02-21/peb';
 
 //------------------
 //b Data Definitions
@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             var instNo = data.id;
             var activeNew = instancesArray[instNo].active;
             data.active = activeNew;
-            var loggingNew = instancesArray[instNo].loging;
+            var loggingNew = instancesArray[instNo].logging;
             data.params.logging = loggingNew;
             var url = '/ZAutomation/api/v1/instances/'+instNo;
             ch_utils.ajax_put(url, JSON.stringify(data), success_put);

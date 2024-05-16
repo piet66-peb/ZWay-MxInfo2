@@ -12,7 +12,7 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V2.0.0 2024-01-29/peb
+//h Version:      V2.0.0 2024-02-13/peb
 //v History:      V1.0 2019-03-09/peb first version
 //v               V1.5 2021-01-01/peb [+]check login state
 //v               2.0.0 2023-10-17/peb [+]MxLogging
@@ -30,7 +30,7 @@
 //-----------
 var MODULE='index.html.js';
 var VERSION='V2.0.0';
-var WRITTEN='2024-01-29/peb';
+var WRITTEN='2024-02-13/peb';
 
 //------------------
 //b Data Definitions
@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 var filDisp = fileName.replace('.html', '');
                 if (Mxfound === true || filDisp.indexOf('Mx') !== 0) {
                     htmlLines += '<tr><td><a href="'+fileName+
-                        '?BasicAuth='+BasicAuth+'"><b><big>'+filDisp+'</big></b></a>'+text+'</td>';
+                        '?BasicAuth='+BasicAuth+'"><b><big>'+filDisp+'</big></b></a></td><td>'+text+'</td>';
                 }
             }
         });

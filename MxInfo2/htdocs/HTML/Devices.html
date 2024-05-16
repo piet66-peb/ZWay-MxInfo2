@@ -56,8 +56,8 @@
       </div>
 
       <div>
-      <input type="text" id="myInput" onkeyup="myFunction()" 
-       placeholder="Search for names..">      
+          <input type="text" id="myInput" onkeyup="myFunction()" 
+                placeholder="Search for names..">      
           <input type="checkbox" id="physical" checked onchange="display(this)">
           <label id="physicalT">physical</label>
           <input type="checkbox" id="nonPhsicyl" checked onchange="display(this)">
@@ -88,8 +88,8 @@
           tr = table.getElementsByTagName("tr");
           for (i = 1; i < tr.length; i++) {
               doDisp = 0;
-              for (j = 0; j < 7; j++) {
-                  if (j == 4 || j === 5) {continue;}
+              for (j = 0; j < 11; j++) {
+                  if (j >= 4 & j <= 7) {continue;}
                   td = tr[i].getElementsByTagName("td")[j];
                   if (td) {
                     txtValue = td.textContent || td.innerText;

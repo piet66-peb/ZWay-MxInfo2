@@ -11,7 +11,7 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V1.0 2023-12-06/peb
+//h Version:      V1.0 2024-02-21/peb
 //v History:      V1.0 2022-04-16/peb first version
 //h Copyright:    (C) piet66 2020
 //h License:      http://opensource.org/licenses/MIT
@@ -27,7 +27,7 @@
 //-----------
 var MODULE='Devices.html.js';
 var VERSION='V1.0';
-var WRITTEN='2023-12-06/peb';
+var WRITTEN='2024-02-21/peb';
 
 //------------------
 //b Data Definitions
@@ -84,16 +84,16 @@ var messageFormats = [
         en: 'Update Time'
     },
     {//4
-        de: 'Wert',
-        en: 'Level'
+        de: 'level',
+        en: 'level'
     },
     {
-        de: 'Versteckt',
-        en: 'Hidden'
+        de: 'hidden',
+        en: 'hidden'
     },
     {
-        de: 'Sichtbar',
-        en: 'Visible'
+        de: 'visible',
+        en: 'visible'
     },
     {
         de: 'Anzahl Geräte: {0}',
@@ -112,19 +112,19 @@ var messageFormats = [
         en: 'non physical '
     },
     {//11
-        de: 'versteckt ',
+        de: 'hidden ',
         en: 'hidden '
     },
     {//12
-        de: 'nicht versteckt ',
+        de: 'not hidden ',
         en: 'not hidden '
     },
     {//13
-        de: 'sichtbar ',
+        de: 'visible ',
         en: 'visible '
     },
     {//14
-        de: 'unsichtbar ',
+        de: 'invisible ',
         en: 'invisible '
     },
     {//15
@@ -257,7 +257,6 @@ function buildHTML(devicesArray) {
         html += '<td headers="deviceType" align=left>'+deviceType+'</td>';
         html += '<td headers="locationName" align=left>'+locationName+'</td>';
         html += '<td headers="creatorId" align=center>'+col2+'</td>';
-        html += '<td headers="updateTime">'+ch_utils.userTime(col3)+'</td>';
         var color;
         switch (typeof col4) {
             case 'string':
@@ -275,8 +274,6 @@ function buildHTML(devicesArray) {
                 break;
         }
 
-        html += '<td headers="level" align=center>';
-        html += "<font color='"+color+"'>"+col4+"</font></td>";
         switch (col5) {
             case true:
                 color = 'red';
@@ -285,16 +282,20 @@ function buildHTML(devicesArray) {
                 color = 'black';
                 break;
         }
-     
-        html += '<td headers="permanently_hidden" align=center>';
-        html += buildCheckbox(col5);
+
+        var devId = col0.split('>')[1].split('<')[0];
+        html += '<td headers="isFailed" align=center>';
+        html += buildCheckbox('isFailed', devId, col7, false);
         html += '</td>';
         html += '<td headers="visibility" align=center>';
-        html += buildCheckbox(col6);
+        html += buildCheckbox('visibility', devId, col6, false);
         html += '</td>';
-        html += '<td headers="isFailed" align=center>';
-        html += buildCheckbox(col7);
+        html += '<td headers="permanently_hidden" align=center>';
+        html += buildCheckbox('permanently_hidden', devId, col5, false);
         html += '</td>';
+        html += '<td headers="level" align=center>';
+        html += "<font color='"+color+"'>"+col4+"</font></td>";
+        html += '<td headers="updateTime">'+ch_utils.userTime(col3)+'</td>';
         html += '</tr>\n';
         return html;
     } //nextLine
@@ -308,11 +309,11 @@ function buildHTML(devicesArray) {
     html += '<th id="deviceType"> '+ch_utils.buildMessage(ix_selectTexts+15)+' </th>';
     html += '<th id="locationName"> '+ch_utils.buildMessage(ix_selectTexts+16)+' </th>';
     html += '<th id="creatorId"> '+ch_utils.buildMessage(ix_selectTexts+2)+' </th>';
-    html += '<th id="updateTime"> '+ch_utils.buildMessage(ix_selectTexts+3)+' </th>';
-    html += '<th id="level"> '+ch_utils.buildMessage(ix_selectTexts+4)+' </th>';
-    html += '<th id="permanently_hidden" class="sorttable_nosort"> '+ch_utils.buildMessage(ix_selectTexts+5)+' </th>';
-    html += '<th id="visibility" class="sorttable_nosort"> '+ch_utils.buildMessage(ix_selectTexts+6)+' </th>';
     html += '<th id="isFailed" class="sorttable_nosort"> '+ch_utils.buildMessage(ix_selectTexts+17)+' </th>';
+    html += '<th id="visibility" class="sorttable_nosort"> '+ch_utils.buildMessage(ix_selectTexts+6)+' </th>';
+    html += '<th id="permanently_hidden" class="sorttable_nosort"> '+ch_utils.buildMessage(ix_selectTexts+5)+' </th>';
+    html += '<th id="level"> '+ch_utils.buildMessage(ix_selectTexts+4)+' </th>';
+    html += '<th id="updateTime"> '+ch_utils.buildMessage(ix_selectTexts+3)+' </th>';
     html += '</tr></thead>';
     html += '<tbody>\n';
 
@@ -367,13 +368,16 @@ function buildHTML(devicesArray) {
     html += '</tbody>';
     html += '<tfoot>';
     html += '<tr>';
-    html += '<th id="device">'+ch_utils.buildMessage(ix_selectTexts+7,countDevices)+'</th>';
-    html += '<th id="title"></th>';
-    html += '<th id="creatorId">'+ch_utils.buildMessage(ix_selectTexts+8,countPhysical)+' </th>';
-    html += '<th id="updateTime"></th>';
-    html += '<th id="level"></th>';
-    html += '<th id="permanently_hidden"></th>';
-    html += '<th id="visibility"></th>';
+    html += '<th>'+ch_utils.buildMessage(ix_selectTexts+7,countDevices)+'</th>';
+    html += '<th></th>';
+    html += '<th>'+ch_utils.buildMessage(ix_selectTexts+8,countPhysical)+' </th>';
+    html += '<th></th>';
+    html += '<th></th>';
+    html += '<th></th>';
+    html += '<th></th>';
+    html += '<th></th>';
+    html += '<th></th>';
+    html += '<th></th>';
     html += '</tr>';
     html += '</tfoot>';
     html += '</table>';
@@ -381,19 +385,11 @@ function buildHTML(devicesArray) {
     return html;
 } //buildHTML
 
-function buildCheckbox(val) {
-    var str;
-    switch(val) {
-        case true:
-            str = '<input type="checkbox" checked disabled>';
-            break;
-        case false:
-            str = '<input type="checkbox" disabled>';
-            break;
-        default:
-            str = val;
-            break;
-    }
+function buildCheckbox(col, devId, val, changeable) {
+    var str  = '<input type="checkbox" id="'+col+'+'+devId+'"';
+        str += val ? ' checked' : '';
+        str += changeable ? '' : ' disabled';
+        str += '>';
     return str;
 } //buildCheckbox
 
@@ -403,6 +399,32 @@ function printHTML(dataBuffer, messNo) {
     document.getElementById('json-renderer').innerHTML = dataBuffer;
     var el = document.getElementById('indextable');
     sorttable.makeSortable(el);
+
+    //define checkbox event:
+    var checkboxList = document.querySelectorAll('[type="checkbox"]');
+    //console.log(checkboxList);
+    /*jshint loopfunc:true */
+    for (var i = 0; i < checkboxList.length; i++) {
+        checkboxList[i].addEventListener('change', function(event) {
+            if (event.target.id.indexOf('+') <= 0) {
+                return;
+            }
+            var metric = event.target.id.split('+')[0];
+            var devId = event.target.id.replace(metric+'+', '');
+
+            var checked = event.target.checked;
+            //only works for values within metrics:
+            var url = '/ZAutomation/api/v1/devices/'+devId+'/command/set?'+metric+'='+checked;
+            ch_utils.ajax_get(url, success, fail);
+            function success (data) {
+                alert('success');
+            }
+            function fail (status, text) {
+                alert(text);
+            }
+        });
+    }
+    /*jshint loopfunc:false */
 } //printHTML
 
 function scrollUp(flag) {

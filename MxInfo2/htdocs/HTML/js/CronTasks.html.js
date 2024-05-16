@@ -12,7 +12,7 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V1.5 2022-07-16/peb
+//h Version:      V1.5 2024-05-11/peb
 //v History:      V1.0 2019-02-08/peb first version
 //v               V1.2 2019-08-29/peb [+]accept several times per task
 //v               V1.5 2022-04-24/peb [+]ZWave: ZWaveTimeUpdater.poll
@@ -30,7 +30,7 @@
 //-----------
 var MODULE='CronTasks.html.js';
 var VERSION='V1.5';
-var WRITTEN='2022-07-16/peb';
+var WRITTEN='2024-05-11/peb';
 
 //------------------
 //b Data Definitions
@@ -53,6 +53,7 @@ var stepsSep = '|';
 var instArray = [];
 var instanceTasks = [];
 var instanceIdselected = -1;
+var currPage;
 
 var jsEl;
 var jsVisible = false;
@@ -194,9 +195,13 @@ var messageFormats = [
         en: 'Nothing selected'
     },
     {
-        de: 'not used',
-        en: 'not used'
-    }
+        de: 'ab',
+        en: 'from'
+    },
+    {
+        de: 'jetzt',
+        en: 'now'
+    },
 ];
 
 //-----------
@@ -222,6 +227,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
         ch_utils.buttonText('next_fire', 4);
         ch_utils.buttonText('next_fire_per_inst', 5);
         ch_utils.buttonText('label2', ix_selectTexts+0-ixButtonTextBase);
+        ch_utils.buttonText('from_div_label', 12);
+        ch_utils.buttonText('from_div_button', 13);
+        ch_utils.buttonVisible('form_select', false);
+        ch_utils.buttonVisible('from_div', false);
+        var d_string = document.getElementById('from_div_time').value;
+        if (!d_string) {
+            set_now();
+        }
     }
 
     function startDatacollection() {
@@ -269,6 +282,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 });
 
                 //get cron tasks
+                ch_utils.buttonVisible('form_select', false);
+                ch_utils.buttonVisible('from_div', true);
                 cronTasks = getTasks(cronModule.params.schedules);
                 printHTML(nextFireHTML, 12);
                 buildSelectBoxes();
@@ -278,6 +293,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         function getTasks(schedules) {
             var taskArray = [];
+            nextFireArray = [];
+            nextFireInstArray = [];
+
+            var d_string = document.getElementById('from_div_time').value;
+            var d = new Date(d_string);
+            if (isNaN(d)) {
+                return;
+            }
 
             Object.keys(schedules).forEach(function(schedule, ix) {
                 var times = [];
@@ -385,7 +408,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 }
 
                 //console.log(schedule+': '+creator.title);
-                var nextFire = timeString(switches, steps);
+                var nextFire = timeString(switches, steps, d);
 
                 var schedObj = {
                         ix : taskCounter,
@@ -418,12 +441,138 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 return 0;
             });
 
-            buildNextTriggers();
+            buildHTMLs();
 
             return taskArray;
         } //getTasks
 
-        function buildNextTriggers() {
+        function buildNext(schedules) {
+            nextFireArray = [];
+            nextFireInstArray = [];
+
+            var d_string = document.getElementById('from_div_time').value;
+            var d = new Date(d_string);
+            if (isNaN(d)) {
+                return;
+            }
+
+            Object.keys(schedules).forEach(function(schedule, ix) {
+                var times = [];
+                var creator;
+                var switches = [];
+                var steps = [];
+                
+                schedules[schedule].forEach(function(schedData) {
+                    schedData.forEach(function(schedData2) {
+                        if (schedData2 !== null && typeof schedData2 === 'object') {
+                            if (schedData2.hasOwnProperty('time')) {
+                                var timeObj = schedData2.time;
+                                times.push(timeObj);
+                                var stepsString, s;
+                                if (timeObj.minute === null) {
+                                    s = 1;
+                                } else {
+                                    s = (timeObj.minute[2] || '');
+                                    if (timeObj.minute[0] === timeObj.minute[1]) {
+                                        s = '';
+                                    }
+                                }
+                                stepsString = s;
+                                if (timeObj.hour === null) {
+                                    s = 1;
+                                } else {
+                                    s = (timeObj.hour[2] || '');
+                                    if (timeObj.hour[0] === timeObj.hour[1]) {
+                                        s = '';
+                                    }
+                                }
+                                stepsString += '-'+s;
+                                if (timeObj.weekDay === null) {
+                                    s = 1;
+                                } else {
+                                    s = (timeObj.weekDay[2] || '');
+                                    if (timeObj.weekDay[0] === timeObj.weekDay[1]) {
+                                        s = '';
+                                    }
+                                }
+                                stepsString += '-'+s;
+                                if (timeObj.day === null) {
+                                    s = 1;
+                                } else {
+                                    s = (timeObj.day[2] || '');
+                                    if (timeObj.day[0] === timeObj.day[1]) {
+                                        s = '';
+                                    }
+                                }
+                                stepsString += '-'+s;
+                                if (timeObj.month === null) {
+                                    s = 1;
+                                } else {
+                                    s = (timeObj.month[2] || '');
+                                    if (timeObj.month[0] === timeObj.month[1]) {
+                                        s = '';
+                                    }
+                                }
+                                stepsString += '-'+s;
+
+                                //steps.push(stepsString.replace(/-*$/, ''));
+                                steps.push(stepsString);
+                            }
+                        }
+                        if (schedData2 !== null && typeof schedData2 === 'object') {
+                            if (schedData2.moduleId) {
+                                creator = schedData2;
+                            }
+                        }
+                        if (schedData2 !== null && typeof schedData2 === 'object') {
+                            if (schedData2.minute) {
+                                switches.push(schedData2);
+                            }
+                        }
+                    });
+                }); //schedules[schedule]
+
+                if (creator === undefined) {
+                    //number at end = instance id
+                    var instanceId = schedule.replace(/^.*[^0-9]/, '');
+                    //first part = module id
+                    var moduleId = schedule.replace(/\..*$/, '');
+                    if (schedule === 'checkForfailedNode.poll' ||   //.3..7
+                        schedule === 'deadDetectionCheckBatteryDevice.poll' || //2.3.8
+                        schedule === 'ZWaveTimeUpdater.poll' || //3.2.2
+                        schedule === 'zwayCertXFCheck.poll') {
+                        moduleId = 'ZWave';
+                    }
+                    creator = {
+                        id : instanceId === '' ? null : instanceId,
+                        title : '?',
+                        moduleId : moduleId,
+                        instanceCreated : null,
+                        //active : null
+                    };
+                    creator = fillCreator(creator);
+                    if (creator.instanceCreated === null) {
+                        //ch_utils.alertMessage(10, schedule);
+                        creator.id = 0;
+                        noCreatorTasks.push(schedule);
+                    }
+                } else {
+                    if (creator.hasOwnProperty('cronCreated')) {
+                        if (creator.cronCreated.indexOf('-') < 0) {
+                            creator.cronCreated = creator.cronCreated+' '+ch_utils.userTime(creator.cronCreated);
+                        }
+                    }
+                }
+
+                //console.log(schedule+': '+creator.title);
+                var nextFire = timeString(switches, steps, d);
+                nextFireArray.push(nextFire+htmlSep+creator.title+htmlSep+schedule);
+                nextFireInstArray.push(creator.title+htmlSep+nextFire+htmlSep+schedule);
+            });
+            buildHTMLs();
+        } //buildNext
+
+        function buildHTMLs() {
             var instT = messageFormats[ixButtonTextBase + 8][lang];
             var taskT = messageFormats[ixButtonTextBase + 6][lang];
             var nextT = messageFormats[ixButtonTextBase + 7][lang];
@@ -516,9 +665,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
             });
             nextFireInstHTML += '</tbody></table>';
 
-        } //buildNextTriggers
+        } //buildHTMLs
 
-        function timeString(switches, steps) {
+        function timeString(switches, steps, d) {
             var nextRun, currSwitch, currTime, nextFire, i, len;
             function daysPerMonth(monat, jahr) {
                 if(monat !== 2) {
@@ -623,7 +772,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 currTime.weekDay = getWeekday(currTime.year);
             } //addYear
 
-            var d = new Date();
+            //var d = new Date();
 
             var currTimeStart = {
                 minute:  d.getMinutes(),
@@ -694,7 +843,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
                     //console.log(JSON.stringify(currSwitch.minute));
 
                     //take ix = 0
-                    nextFire = currTime.year+'-'+pad(currSwitch.month[0])+'-'+pad(currSwitch.day[0])+' '+pad(currSwitch.hour[0])+':'+pad(currSwitch.minute[0]);
+                    nextFire = currTime.year+'-'+pad(currSwitch.month[0])+'-'+pad(currSwitch.day[0])+
+                               ' '+pad(currSwitch.hour[0])+':'+pad(currSwitch.minute[0]);
                     //console.log(nextFire);
 
                     nextFireArray.push(nextFire+stepsSep+steps[is]);
@@ -803,22 +953,51 @@ document.addEventListener("DOMContentLoaded", function(event) {
             //------------- event listeners -----------------------------------------------
 
             document.getElementById('cron_module').addEventListener('click', function() {
+                currPage = undefined;
+                ch_utils.buttonVisible('form_select', false);
+                ch_utils.buttonVisible('from_div', false);
                 printJSON(cronModule, 6);
             });
 
-            document.getElementById('cron_tasks').addEventListener('click', function() {
-                printJSON(cronTasks, 7, taskCounter);
-            });
-
             document.getElementById('no_creator_tasks').addEventListener('click', function() {
+                currPage = undefined;
+                ch_utils.buttonVisible('form_select', false);
+                ch_utils.buttonVisible('from_div', false);
                 printJSON(noCreatorTasks, 11, noCreatorTasks.length.toString());
             });
 
+            document.getElementById('cron_tasks').addEventListener('click', function() {
+                currPage = undefined;
+                ch_utils.buttonVisible('form_select', false);
+                ch_utils.buttonVisible('from_div', false);
+                printJSON(cronTasks, 7, taskCounter);
+            });
+
+            document.getElementById('instance_tasks').addEventListener('click', function() {
+                currPage = undefined;
+                ch_utils.buttonVisible('form_select', true);
+                ch_utils.buttonVisible('from_div', false);
+                if (instanceIdselected === -1) {
+                    ch_utils.displayMessage(9);
+                    return;
+                }
+                buildInstanceTasks(instanceIdselected);
+                printJSON(instanceTasks, 8, instanceTasks.length+'');
+            });
+
             document.getElementById('next_fire').addEventListener('click', function() {
+                currPage = 'nextFireHTML';
+                ch_utils.buttonVisible('form_select', false);
+                ch_utils.buttonVisible('from_div', true);
+                buildNext(cronModule.params.schedules);
                 printHTML(nextFireHTML, 12);
             });
 
             document.getElementById('next_fire_per_inst').addEventListener('click', function() {
+                currPage = 'nextFireInstHTML';
+                ch_utils.buttonVisible('form_select', false);
+                ch_utils.buttonVisible('from_div', true);
+                buildNext(cronModule.params.schedules);
                 printHTML(nextFireInstHTML, 13);
             });
 
@@ -831,16 +1010,22 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 buildInstanceTasks(instanceIdselected);
                 printJSON(instanceTasks, 8, instanceTasks.length+'');
             }, true);
-
-            document.getElementById('instance_tasks').addEventListener('click', function() {
-                if (instanceIdselected === -1) {
-                    ch_utils.displayMessage(9);
-                    return;
-                }
-                buildInstanceTasks(instanceIdselected);
-                printJSON(instanceTasks, 8, instanceTasks.length+'');
-            });
-
         } //exploitData
     } //startDatacollection
 }); //$(document).ready
+
+function set_now() {
+    document.getElementById('from_div_time').value = 
+        ch_utils.userTime().replace(/:[^:]*$/, '');
+}
+
+function change_html(self) {
+    var d_string = self.value;
+    var d = new Date(d_string);
+    if (isNaN(d)) {
+        alert(d);
+        return;
+    }
+}
+
+    

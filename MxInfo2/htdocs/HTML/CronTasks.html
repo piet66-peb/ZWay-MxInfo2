@@ -63,10 +63,15 @@
       <button id="next_fire">Next</button>
       <button id="next_fire_per_inst">Fire per Instance</button>
       <hr>
-      <form action="#" >
-	  <label id="label2">Instanz:</label>
-          <select name="instance" id="selInstance"></select>
+      <form id="form_select" action="#" >
+	        <label id="label2">Instanz:</label>
+            <select name="instance" id="selInstance"></select>
       </form>
+      <div id='from_div'>
+	        <label id="from_div_label">from:</label>
+            <input type="text" id="from_div_time" placeholder="YYYY-MM-DD HH:MI"  onchange="change_html(this)">      
+            <button id="from_div_button" onclick="set_now()">now</button>
+      </div>
       <hr>
 
       <div id="notification">
