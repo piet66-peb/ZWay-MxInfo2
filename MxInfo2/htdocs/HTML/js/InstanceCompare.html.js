@@ -12,7 +12,7 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V1.7 2022-07-16/peb
+//h Version:      V1.7 2024-05-29/peb
 //v History:      V1.0 2020-06-04/peb first version
 //v               V1.5 2020-12-05/peb [+]button 'configuration'
 //h Copyright:    (C) piet66 2020
@@ -30,7 +30,7 @@
 //-----------
 var MODULE='InstanceCompare.html.js';
 var VERSION='V1.7';
-var WRITTEN='2022-07-16/peb';
+var WRITTEN='2024-05-29/peb';
 
 //------------------
 //b Data Definitions
@@ -48,8 +48,8 @@ var messageFormats = [
         en: 'You have to log in first as administrator!'
     },
     {
-        de: 'Hallo %s, leider haben Sie nicht die erforderlichen Administratorrechte!',
-        en: 'Hallo %s, sorry, you have no administrator rights to read the data!'
+        de: 'Hallo {0}, leider haben Sie nicht die erforderlichen Administratorrechte!',
+        en: 'Hallo {0}, sorry, you have no administrator rights to read the data!'
     },
     {
         de: 'Instanzendaten werden gelesen...',
@@ -64,8 +64,8 @@ var messageFormats = [
         en: 'Please make a select!'
     },
     {
-        de: '%s',
-        en: '%s'
+        de: '{0}',
+        en: '{0}'
     },
     {
         de: "Ausdruck der Instanzen",
@@ -317,8 +317,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
         instance1Idselected = !instance1Idselected ? '' : instance1Idselected;
         instance2Idselected = !instance2Idselected ? '' : instance2Idselected;
 
-        if (instance1Idselected !== instance1IdselectedOld) {
-            ch_utils.displayMessage(6);
+        //if (instance1Idselected !== instance1IdselectedOld) {
+            ch_utils.displayMessage(6, '');
             buff1 = '';
             if (instance1Idselected === '') {
                 document.getElementById('json-renderer1').innerHTML = '';
@@ -333,7 +333,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 var url = '/ZAutomation/api/v1/instances/'+instance1Idselected;
                 ch_utils.ajax_get(url, success);
             }
-        }
+        //}
         function success (buffer) {
             buff1 = addDeviceNames(buffer.data);
             $('#json-renderer1').jsonViewer(buff1, {
@@ -351,8 +351,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
         instance1Idselected = !instance1Idselected ? '' : instance1Idselected;
         instance2Idselected = !instance2Idselected ? '' : instance2Idselected;
 
-        if (instance2Idselected !== instance2IdselectedOld) {
-            ch_utils.displayMessage(6);
+        //if (instance2Idselected !== instance2IdselectedOld) {
+            ch_utils.displayMessage(6, '');
             buff2 = '';
             if (instance2Idselected === '') {
                 document.getElementById('json-renderer2').innerHTML = '';
@@ -367,16 +367,16 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 var url = '/ZAutomation/api/v1/instances/'+instance2Idselected;
                 ch_utils.ajax_get(url, success);
             }
-        } else {
-            if (instance2Idselected !== '') {
-                $('#json-renderer2').jsonViewer(buff2, {
-                    collapsed: false,
-                    rootCollapsable: false,
-                    withQuotes: false
-                });
-                dispDifferences();
-            }
-        }
+        //} else {
+        //    if (instance2Idselected !== '') {
+        //        $('#json-renderer2').jsonViewer(buff2, {
+        //            collapsed: false,
+        //            rootCollapsable: false,
+        //            withQuotes: false
+        //        });
+        //        dispDifferences();
+        //    }
+        //}
         function success (buffer) {
             buff2 = addDeviceNames(buffer.data);
             $('#json-renderer2').jsonViewer(buff2, {

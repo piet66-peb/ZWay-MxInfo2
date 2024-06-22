@@ -7,7 +7,7 @@ This Z-Way package contains a collection of useful analysis tools. They are
 designed to run in a browser on a desktop PC. The module does nothing but 
 download the software. 
 
-[List of all Functions](https://raw.githack.com/piet66-peb/ZWay-MxInfo2/main/MxInfo2/htdocs/HTML/Readme.html)
+[List of all Functions](https://rawcdn.githack.com/piet66-peb/ZWay-MxInfo2/main/MxInfo2/htdocs/HTML/Readme.html)
 
 
 ## Prerequisites

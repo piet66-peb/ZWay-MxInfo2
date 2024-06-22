@@ -11,8 +11,9 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V1.0 2024-02-21/peb
-//v History:      V1.0 2023-10-07/peb first version
+//h Version:      V2.0.0 2024-06-21/peb
+//v History:      V1.0   2023-10-07/peb first version
+//v               V2.0.0 2024-06-04/peb [*]set logging parameter 
 //h Copyright:    (C) piet66 2020
 //h License:      http://opensource.org/licenses/MIT
 //h
@@ -26,14 +27,14 @@
 //b Constants
 //-----------
 var MODULE='MxLogging.html.js';
-var VERSION='V1.0';
-var WRITTEN='2024-02-21/peb';
+var VERSION='V2.0.0';
+var WRITTEN='2024-06-21/peb';
 
 //------------------
 //b Data Definitions
 //------------------
 var ixButtonTextBase = 11;
-var ix_selectTexts = 11;
+var ix_selectTexts = 12;
 var messageFormats = [
     //message texts (0+...):
     {//0
@@ -81,8 +82,13 @@ var messageFormats = [
         en: 'instance {0}: logging is switched off',
     },
 
-    //button texts (11+...):
-    //select texts (11+...):
+    {//11
+        de: 'Instanz {0}: Fehler beim Setzen von Logging ({1})',
+        en: 'instance {0}: error at switching logging on/off ({1})',
+    },
+
+    //button texts (12+...):
+    //select texts (12+...):
     {
         de: 'Instanz',
         en: 'Instance'
@@ -144,64 +150,78 @@ document.addEventListener("DOMContentLoaded", function(event) {
     filterInput.placeholder = ch_utils.buildMessage(6);
     filterInput.focus();
 
-    function changeActive(column, instNo) {
-        //get instance data
+    function changeActive(instNo) {
+    //---------------------------------------------------------------------
+    // ZAutomation API:
+    // changing of the instance configuration 
+    // always send the complete configuration, missing parameters are reset
+    // it results in
+    // -implicite stop of the instance, if it is active
+    // -start instance (again), if active=true is set
+    //---------------------------------------------------------------------
+        //request current instance configuration
         var url = '/ZAutomation/api/v1/instances/'+instNo;
         ch_utils.ajax_get(url, success_get);
 
         function success_get (response) {
+            //change received instance configuration
             var data = response.data;
             var instNo = data.id;
             var activeNew = instancesArray[instNo].active;
             data.active = activeNew;
-            var loggingNew = instancesArray[instNo].logging;
-            data.params.logging = loggingNew;
+            //send changed instance configuration
             var url = '/ZAutomation/api/v1/instances/'+instNo;
             ch_utils.ajax_put(url, JSON.stringify(data), success_put);
         }
 
         function success_put(response) {
             var instNo = response.data.id;
-            if (column === 'active') {
-                var active = response.data.active;
-                if (active === true) {
-                    alert(ch_utils.buildMessage(7, instNo));
-                } else {
-                    alert(ch_utils.buildMessage(8, instNo));
-                }
-            } else
-            if (column === 'logging') {
-                var logging = response.data.response.logging;
-                if (logging === true) {
-                    alert(ch_utils.buildMessage(9, instNo));
-                } else {
-                    alert(ch_utils.buildMessage(10, instNo));
-                }
+            var active = response.data.active;
+            if (active === true) {
+                alert(ch_utils.buildMessage(7, instNo));
+            } else {
+                alert(ch_utils.buildMessage(8, instNo));
             }
         }
     } //changeActive
 
     function changeLogging(instNo) {
-        var devId = instancesArray[instNo].module+'_logging_'+instNo;
-        var checked = instancesArray[instNo].logging;
-        var levelNew = checked === true ? 'on' : 'off';
-        var url = '/ZAutomation/api/v1/devices/'+devId+'/command/'+levelNew;
-        ch_utils.ajax_get(url, success_get, fail_get);
+    //---------------------------------------------------------------------
+    // JS API:
+    // changing of special parameters in the instance configuration
+    // -changing of the active flag doesn't start/stop the instance
+    //---------------------------------------------------------------------
+        var loggingNew = instancesArray[instNo].logging;
+        var url = [
+            '/JS/Run/',
+            '{',
+                'var obj = controller.instances;',
+                'var len = obj.length;',
+                'for (var i = 0; i < len; i++) {',
+                    'if (obj[i].id === '+instNo+') {',
+                        'obj[i].params.logging = '+loggingNew+';',
+                        'break;',
+                    '}',
+                '}',
+            '}'
+        ].join('');
+        ch_utils.ajax_get(url, success_get, fail_get, no_data_get);
 
         function success_get(response) {
-            if (checked === true) {
+            if (response === true) {
                 alert(ch_utils.buildMessage(9, instNo));
-            } else {
+            } else
+            if (response === false) {
                 alert(ch_utils.buildMessage(10, instNo));
+            } else {
+                alert(ch_utils.buildMessage(11, instNo, response));
             }
         }
+        function no_data_get(response) {
+            alert(ch_utils.buildMessage(11, instNo, response));
+        }
         function fail_get(status, statusText) {
-            if (status === 404) {
-                alert('device '+devId+' not found'+
-                    '\nMxBaseModule >=V3.8.2 is needed.');
-            } else {
-                alert(status+': '+statusText);
-            }
+            alert(status+': '+statusText);
         }
     } //changeLogging
 
@@ -234,15 +254,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
                     changesList[instNo] = 'yes';
                     if (column === 'active') {
                         instancesArray[instNo].active = checked;
-                        changeActive(column, instNo);
+                        changeActive(instNo);
                     } else
                     if (column === 'logging') {
                         instancesArray[instNo].logging = checked;
-                        if (instancesArray[instNo].active !== true) {
-                            changeActive(instNo);
-                        } else {
-                            changeLogging(instNo);
-                        }
+                        changeLogging(instNo);
                     }
                 });
             }

@@ -13,8 +13,9 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V1.0.1 2023-10-17/peb
+//h Version:      V1.0.2 2024-06-04/peb
 //v History:      V1.0.0 2022-01-02/peb first version
+//v               V1.0.2 2024-06-04/peb [x]ajax_get: checj for no_data
 //h Copyright:    (C) piet66 2022
 //h License:      http://opensource.org/licenses/MIT
 //h
@@ -28,8 +29,8 @@
 //b Constants
 //-----------
 var MODULE='ch-utils.js';
-var VERSION='V1.0.1';
-var WRITTEN='2023-10-17/peb';
+var VERSION='V1.0.2';
+var WRITTEN='2024-06-04/peb';
 
 //-----------
 //b Functions
@@ -301,7 +302,8 @@ var ch_utils = {
                         data = xhttp.responseText;
                     }
                     //console.log(data);
-                    if (!data) {
+                    //if (!data) {
+                    if (data === null || data === undefined || data === '') {
                         _no_data('no data');
                     } else
                     if (ch_utils.convertCharset) {

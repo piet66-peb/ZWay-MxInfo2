@@ -12,7 +12,7 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V2.0.0 2024-02-10/peb
+//h Version:      V2.0.0 2024-06-10/peb
 //v History:      V1.0   2019-02-08/peb first version
 //v               V1.3   2019-08-20/peb [-]test for user login with ZAutomation
 //v                                        removed, doesn't work in 3.0.0 any more
@@ -33,7 +33,7 @@
 //-----------
 var MODULE='ConfigJson.html.js';
 var VERSION='V2.0.0';
-var WRITTEN='2024-02-10/peb';
+var WRITTEN='2024-06-10/peb';
 
 //------------------
 //b Data Definitions
@@ -95,11 +95,11 @@ var messageFormats = [
         de: 'Liste: {0} alte Geräte in config.json, nach ID sortiert',
         en: 'List: {0} old devices in config.json, sorted by id'
     },
-    {
+    {//10
         de: 'Alle alten Geräte werden entfernt...',
         en: 'Removing all old devices...'
     },
-    {
+    {//11
         de: 'Fehler beim Lesen von {0}: {1}',
         en: 'Error reading {0}: {1}'
     },
@@ -111,21 +111,21 @@ var messageFormats = [
         de: '{0} gelöscht',
         en: '{0} removed',
     },
-    {//14 not used
+    {//14
         de: 'Fehler beim Löschen von {0}',
         en: 'Error at removing {0}',
     },
-    {//15 not used
+    {//15
         de: 'Sie benötigen eine erweiterte Version von updateBackendConfig.js, um diese Geräte löschen zu lassen! Siehe Verzeichnis sysmodules_changed.',
         en: 'You need an enhanced version of updateBackendConfig.js to delete these devices! See folder sysmodules_changed.'
     },
-   {
+   {//16
         de: 'Liste: {0} benutzte Geräte nicht in config.json, nach ID sortiert',
         en: 'List: {0} used devices not in config.json, sorted by id'
     },
-    {
-        de: 'not used',
-        en: 'not used',
+    {//17
+        de: 'Keine alten Geräte (mehr) zu entfernen',
+        en: 'No (more) old devices to remove',
     },
     {//18 not used
         de: '18 not used',
@@ -278,28 +278,27 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     //reove all old devices
     function removeAllOldDevices() {
-        //remove all old devices:
         var devCount = devOldArray.length;
-        if (devCount === 0) {return;}
-        var i;
-        for (i = 0; i < devCount; i++) {
-            var url = '/JS/Run/controller.devices.cleanup("'+devOldArray[0]+'")';
-            console.log(url);
-            var async = false;
-            ch_utils.ajax_get(url, success, fail, success, async);
+        if (devCount === 0) {
+            ch_utils.displayMessage(17);
+            return devCount;
         }
+
+        var url = '/JS/Run/controller.devices.cleanup("'+devOldArray[0]+'")';
+        console.log(url);
+        var async = true;
+        ch_utils.ajax_get(url, success, fail, success, async);
+
         function success () {   //returns 200 + null
             ch_utils.displayMessage(13, devOldArray[0]);
             devOldArray.shift();
+            removeAllOldDevices();
         }
         function fail () {   //returns 500 + not found
             ch_utils.displayMessage(14, devOldArray[0]);
-            i = devCount+1;
+            devOldArray.shift();
+            removeAllOldDevices();
         }
-        if (i === devCount) {
-            printJSON(devOldArray, 9, devOldArray.length);
-        }
-
     } //removeAllOldDevices
 
     function downloadConfigjson() {

@@ -11,7 +11,7 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V1.0 2024-02-21/peb
+//h Version:      V1.0 2024-05-22/peb
 //v History:      V1.0 2022-04-16/peb first version
 //h Copyright:    (C) piet66 2020
 //h License:      http://opensource.org/licenses/MIT
@@ -27,7 +27,7 @@
 //-----------
 var MODULE='Devices.html.js';
 var VERSION='V1.0';
-var WRITTEN='2024-02-21/peb';
+var WRITTEN='2024-05-22/peb';
 
 //------------------
 //b Data Definitions
@@ -284,15 +284,22 @@ function buildHTML(devicesArray) {
         }
 
         var devId = col0.split('>')[1].split('<')[0];
-        html += '<td headers="isFailed" align=center>';
-        html += buildCheckbox('isFailed', devId, col7, false);
-        html += '</td>';
-        html += '<td headers="visibility" align=center>';
-        html += buildCheckbox('visibility', devId, col6, false);
-        html += '</td>';
-        html += '<td headers="permanently_hidden" align=center>';
-        html += buildCheckbox('permanently_hidden', devId, col5, false);
-        html += '</td>';
+        if (elFailed.checked === elNotFailed.checked) {
+            html += '<td headers="isFailed" align=center>';
+            html += buildCheckbox('isFailed', devId, col7, false);
+            html += '</td>';
+        }
+        if (elVisible.checked === elInvisible.checked) {
+            html += '<td headers="visibility" align=center>';
+            html += buildCheckbox('visibility', devId, col6, false);
+            html += '</td>';
+        }
+        if (elHidden.checked === elNonHidden.checked) {
+            html += '<td headers="permanently_hidden" align=center>';
+            html += buildCheckbox('permanently_hidden', devId, col5, false);
+            html += '</td>';
+        }
+
         html += '<td headers="level" align=center>';
         html += "<font color='"+color+"'>"+col4+"</font></td>";
         html += '<td headers="updateTime">'+ch_utils.userTime(col3)+'</td>';
@@ -309,9 +316,17 @@ function buildHTML(devicesArray) {
     html += '<th id="deviceType"> '+ch_utils.buildMessage(ix_selectTexts+15)+' </th>';
     html += '<th id="locationName"> '+ch_utils.buildMessage(ix_selectTexts+16)+' </th>';
     html += '<th id="creatorId"> '+ch_utils.buildMessage(ix_selectTexts+2)+' </th>';
-    html += '<th id="isFailed" class="sorttable_nosort"> '+ch_utils.buildMessage(ix_selectTexts+17)+' </th>';
-    html += '<th id="visibility" class="sorttable_nosort"> '+ch_utils.buildMessage(ix_selectTexts+6)+' </th>';
-    html += '<th id="permanently_hidden" class="sorttable_nosort"> '+ch_utils.buildMessage(ix_selectTexts+5)+' </th>';
+
+    if (elFailed.checked === elNotFailed.checked) {
+        html += '<th id="isFailed" class="sorttable_nosort"> '+ch_utils.buildMessage(ix_selectTexts+17)+' </th>';
+    }
+    if (elInvisible.checked === elVisible.checked) {
+        html += '<th id="visibility" class="sorttable_nosort"> '+ch_utils.buildMessage(ix_selectTexts+6)+' </th>';
+    }
+    if (elHidden.checked === elNonHidden.checked) {
+        html += '<th id="permanently_hidden" class="sorttable_nosort"> '+ch_utils.buildMessage(ix_selectTexts+5)+' </th>';
+    }
+
     html += '<th id="level"> '+ch_utils.buildMessage(ix_selectTexts+4)+' </th>';
     html += '<th id="updateTime"> '+ch_utils.buildMessage(ix_selectTexts+3)+' </th>';
     html += '</tr></thead>';
@@ -373,9 +388,15 @@ function buildHTML(devicesArray) {
     html += '<th>'+ch_utils.buildMessage(ix_selectTexts+8,countPhysical)+' </th>';
     html += '<th></th>';
     html += '<th></th>';
-    html += '<th></th>';
-    html += '<th></th>';
-    html += '<th></th>';
+    if (elFailed.checked === elNotFailed.checked) {
+        html += '<th></th>';
+    }
+    if (elVisible.checked === elInvisible.checked) {
+        html += '<th></th>';
+    }
+    if (elHidden.checked === elNonHidden.checked) {
+        html += '<th></th>';
+    }
     html += '<th></th>';
     html += '<th></th>';
     html += '</tr>';

@@ -12,10 +12,11 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V2.0.0 2024-02-13/peb
-//v History:      V1.0 2019-03-09/peb first version
-//v               V1.5 2021-01-01/peb [+]check login state
+//h Version:      V2.0.1 2024-06-04/peb
+//v History:      V1.0   2019-03-09/peb first version
+//v               V1.5   2021-01-01/peb [+]check login state
 //v               2.0.0 2023-10-17/peb [+]MxLogging
+//v               V2.0.1 2024-06-04/peb [-]check MxBaseModule version
 //h Copyright:    (C) piet66 2019
 //h License:      http://opensource.org/licenses/MIT
 //h
@@ -29,8 +30,8 @@
 //b Constants
 //-----------
 var MODULE='index.html.js';
-var VERSION='V2.0.0';
-var WRITTEN='2024-02-13/peb';
+var VERSION='V2.0.1';
+var WRITTEN='2024-06-04/peb';
 
 //------------------
 //b Data Definitions
@@ -107,6 +108,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         var url = '/ZAutomation/api/v1/modules/MxBaseModule';
         ch_utils.ajax_get(url, success, fail);
         function success (data) {
+/*            
             var v = data.data.version.split('.');
             var v_comp = [3, 8, 2];
             console.log('installed MxBaseModule version: '+v);
@@ -129,6 +131,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 correct_version = true;
             }
             readAndPrint(correct_version);
+*/            
+            readAndPrint(true);
         }
         function fail () {
             readAndPrint(false);
