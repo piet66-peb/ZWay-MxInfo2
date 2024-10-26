@@ -8,9 +8,11 @@ DeviceParameters.html           Administration und documentation of Z-Wave devic
 Devices.html                    List of all virtual devices
 index.html
 InstanceCompare.html            Display, comparison and documentation of module instances
+Modules.html                    List of all modules
 Instances.html                  List of all module instances, activation and deactivation
 MxLogging.html                  List of all Mx module instances, switching logging on/off
 Readme.html
 Routes.html                     Analysis of the possible and used Z-Wave routes
+Routing.html                    Routing statistics, set/delete priority routes
 Security.html                   List of safely included Z-Wave devices
 ZwayConfiguration.html          The saved configuration of all Z-Wave devices

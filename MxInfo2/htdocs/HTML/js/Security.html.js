@@ -11,7 +11,7 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V1.0.0 2023-10-13/peb
+//h Version:      V1.0.0 2024-10-02/peb
 //v History:      V1.0.0 2023-07-29/peb first version
 //h Copyright:    (C) piet66 2023
 //h License:      http://opensource.org/licenses/MIT
@@ -27,7 +27,7 @@
 //-----------
 var MODULE='Security.html.js';
 var VERSION='V1.0.0';
-var WRITTEN='2023-10-13/peb';
+var WRITTEN='2024-10-02/peb';
 
 //------------------
 //b Data Definitions
@@ -75,15 +75,15 @@ var messageFormats = [
         de: 'Gerät',
         en: 'Device'
     },
-    {
+    { //1
         de: 'Name',
         en: 'Name'
     },
-    {
+    { //2
         de: 'Hersteller',
         en: 'Manufacturer'
     },
-    {
+    { //3
         de: 'Name',
         en: 'Name'
     },
@@ -95,25 +95,37 @@ var messageFormats = [
         de: 'S0<br>supported',
         en: 'S0<br>supported'
     },
-    { //5
+    { //6
         de: '<br>security',
         en: '<br>security'
     },
-    { //6
-        de: '<br>NIF',
-        en: '<br>NIF'
-    },
     { //7
+        de: 'NIF',
+        en: 'NIF'
+    },
+    { //8
         de: 'S2<br>supported',
         en: 'S2<br>supported'
     },
-    { //7
+    { //9
         de: '<br>security',
         en: '<br>security'
     },
-    { //8
-        de: '<br>NIF',
-        en: '<br>NIF'
+    { //10
+        de: 'NIF<br>unauth',
+        en: 'NIF<br>unauth'
+    },
+    { //11
+        de: '<br>Einträge',
+        en: '<br>entries'
+    },
+    { //12
+        de: 'leer',
+        en: 'empty'
+    },
+    { //13
+        de: '<br>NIF<br>auth',
+        en: '<br>NIF<br>auth'
     },
 ];
 
@@ -253,11 +265,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
             html += '<td headers="securityS0_nif" align=center>'+c1+view(a[8])+c2+'</td>';
             html += '<td headers="securityS2_supported" align=center>'+c1+buildCheckbox(a[9])+c2+'</td>';
             html += '<td headers="securityS2_security" align=center>'+c1+buildCheckbox(a[10])+c2+'</td>';
-            html += '<td headers="securityS2_nif" align=center>'+c1+view(a[11])+c2+'</td>';
+            html += '<td headers="securityS2_nif_unauth" align=center>'+c1+view(a[11])+c2+'</td>';
+            html += '<td headers="securityS2_nif_auth" align=center>'+c1+view(a[12])+c2+'</td>';
             html += '</tr>\n';
             return html;
         } //nextLine
 
+        var t_entries = ch_utils.buildMessage(ix_headerTexts+11);
+        var t_no = ch_utils.buildMessage(ix_headerTexts+12);
         var html = '';
         html +=  '<table id="indextable">';
         html += '<thead><tr>';
@@ -271,12 +286,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
         html += '<th id="securityS0_nif">'+ch_utils.buildMessage(ix_headerTexts+7)+'</th>';
         html += '<th id="securityS2_supported">'+ch_utils.buildMessage(ix_headerTexts+8)+'</th>';
         html += '<th id="securityS2_security">'+ch_utils.buildMessage(ix_headerTexts+9)+'</th>';
-        html += '<th id="securityS2_nif">'+ch_utils.buildMessage(ix_headerTexts+10)+'</th>';
+        html += '<th id="securityS2_nif_unauth">'+ch_utils.buildMessage(ix_headerTexts+10)+'</th>';
+        html += '<th id="securityS2_nif_auth"'+ch_utils.buildMessage(ix_headerTexts+13)+'</th>';
         html += '</tr></thead>';
         html += '<tbody>\n';
         var len;
         Object.keys(devicesArray).forEach(function(device, i1) {
             if (device > 1) {
+                //console.log('node='+device);
                 var configS0 = devicesArray[device].configS0;
                 var configS2 = devicesArray[device].configS2;
                 var a = [//0 color:
@@ -294,14 +311,19 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 ];
 
                 if (configS0) {
+                    //console.log('node='+device+' has S0');
                     //8 securityS0:
                     a.push(configS0.supported.value);
                     a.push(configS0.security.value);
-                    len = configS0.secureNodeInfoFrame.value.length;
-                    if (len > 0) {
-                        a.push(len+' entries');
+                    if (typeof configS0.secureNodeInfoFrame === 'undefined') {
+                        a.push('--');
                     } else {
-                        a.push('none');
+                        len = configS0.secureNodeInfoFrame.value.length;
+                        if (len > 0) {
+                            a.push(len+' '+t_entries);
+                        } else {
+                            a.push(t_no);
+                        }
                     }
                 } else
                 if (devicesArray[device].nif_security &&
@@ -316,18 +338,40 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 }
 
                 if (configS2) {
+                    //console.log('node='+device+' has S2');
                     //9 securityS2:
                     a.push(configS2.supported.value);
                     a.push(configS2.security.value);
-                    len = configS2.secureNodeInfoFrame.value.length;
-                    if (len > 0) {
-                        a.push(len+' entries');
+                    if (typeof configS2.secureNodeInfoFrames === 'undefined') {
+                        a.push('--');
+                        a.push('--');
                     } else {
-                        a.push('none');
+                        if (typeof configS2.secureNodeInfoFrames.S2Unauthenticated !== 'undefined') {
+                            len = configS2.secureNodeInfoFrames.S2Unauthenticated.value.length;
+                            if (len > 0) {
+                                a.push(len+' '+t_entries);
+                            } else {
+                                a.push(t_no);
+                            }
+                        } else {
+                            a.push('--');
+                        }
+                        if (typeof configS2.secureNodeInfoFrames.S2Authenticated !== 'undefined') {
+                            len = configS2.secureNodeInfoFrames.S2Authenticated.value.length;
+                            if (len > 0) {
+                                a.push(len+' '+t_entries);
+                            } else {
+                                a.push(t_no);
+                            }
+                        } else {
+                            a.push('--');
+                        }
                     }
+
                 } else
                 if (devicesArray[device].nif_security &&
                     devicesArray[device].nif_security.indexOf('S2') >= 0) {
+                    a.push('--');
                     a.push('--');
                     a.push('--');
                     a.push('--');
@@ -335,8 +379,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
                     a.push('');
                     a.push('');
                     a.push('');
+                    a.push('');
                 }
-                console.log(JSON.stringify(a));
+                //console.log(JSON.stringify(a));
                 html += nextLine(a);
             }
         }); //device

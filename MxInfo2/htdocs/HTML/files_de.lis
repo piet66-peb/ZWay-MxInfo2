@@ -8,9 +8,11 @@ DeviceParameters.html           Administration und Dokumentation von Z-Wave Ger�
 Devices.html                    Liste aller virtuellen Geräte
 index.html
 InstanceCompare.html            Anzeige, Vergleich und Dokumentation von Modulinstanzen
+Modules.html                    Liste aller Module
 Instances.html                  Liste aller Modulinstanzen, Aktivierung und Deaktivierung
 MxLogging.html                  Liste aller Mx-Modulinstanzen, Ein-/Ausschalten des Loggings
 Readme.html
 Routes.html                     Analyse der möglichen und verwendeten Z-Wave Routen
+Routing.html                    Routing Statistik, Setzen/ Löschen von Priority Routes 
 Security.html                   Liste der sicher inkludierten Z-Wave Geräte
 ZwayConfiguration.html          Die gespeicherte Konfiguration aller Z-Wave Geräte

@@ -2,31 +2,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
    <head>
       <meta charset="utf-8">
-      <title>MxLogging</title>
+      <title>Routing</title>
       <link rel="shortcut icon" href="/ZAutomation/api/v1/load/modulemedia/MxInfo2/icon.png">
 
       <script src="libs/sorttable.min.js"></script> 
       <script src='js/ch_utils.js' charset="utf-8"></script>
-      <script src='js/MxLogging.html.js' charset="utf-8"></script>
+      <script src='js/Routing.html.js' charset="utf-8"></script>
 
       <style type="text/css">
          body {
-             margin: 0 3%;
              font-family: sans-serif;
-             font-size: 110%
          }
          pre#json-renderer {
              float: left;
              border: 0px solid #aaa;
-             padding: 0.5em 1.5em;
          }
-      </style>
-
-      <!-- headline or sortable tables -->
-      <style type="text/css">
-        table.sortable thead th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
-            content: "\25B4\25BE" 
-        }
       </style>
 
       <style type="text/css">
@@ -56,8 +46,12 @@
       <div id="notification">
          <div id="notification-message">Reading script file...</div>
       </div>
-      <input type="text" id="myInput" onkeyup="myFunction()" 
-       placeholder="Search for names.."><br>
+      <div>
+          <input type="text" id="myInput" onkeyup="myFunction()" 
+                placeholder="Search for names..">      
+      </div>
+        <br>
+        <div id="ratio"></div>
       <pre id="json-renderer"></pre>
 
       <script>
@@ -69,7 +63,8 @@
           tr = table.getElementsByTagName("tr");
           for (i = 1; i < tr.length; i++) {
               doDisp = 0;
-              for (j = 0; j < 4; j++) {
+              for (j = 0; j < 11; j++) {
+                  if (j >= 4 & j <= 7) {continue;}
                   td = tr[i].getElementsByTagName("td")[j];
                   if (td) {
                     txtValue = td.textContent || td.innerText;
@@ -78,7 +73,7 @@
                     }
                   }   
               }
-                  if (doDisp) {
+              if (doDisp) {
                     tr[i].style.display = "";
                   } else {
                     tr[i].style.display = "none";
@@ -89,4 +84,5 @@
 
    </body>
 </html>
+
 

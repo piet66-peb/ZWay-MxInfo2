@@ -2,21 +2,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
    <head>
       <meta charset="utf-8">
-      <title>MxLogging</title>
+      <title>Modules</title>
       <link rel="shortcut icon" href="/ZAutomation/api/v1/load/modulemedia/MxInfo2/icon.png">
 
       <script src="libs/sorttable.min.js"></script> 
       <script src='js/ch_utils.js' charset="utf-8"></script>
-      <script src='js/MxLogging.html.js' charset="utf-8"></script>
+      <script src='js/Modules.html.js' charset="utf-8"></script>
 
       <style type="text/css">
          body {
-             margin: 0 3%;
              font-family: sans-serif;
-             font-size: 110%
+             font-size: 110%;
          }
          pre#json-renderer {
-             float: left;
              border: 0px solid #aaa;
              padding: 0.5em 1.5em;
          }
@@ -56,6 +54,10 @@
       <div id="notification">
          <div id="notification-message">Reading script file...</div>
       </div>
+      <div style='float: right;'>
+          <label id="showUnusedText">Show unused: </label>
+          <input type="checkbox" id="showUnused" onchange="display(this)">
+      </div>
       <input type="text" id="myInput" onkeyup="myFunction()" 
        placeholder="Search for names.."><br>
       <pre id="json-renderer"></pre>
@@ -69,7 +71,7 @@
           tr = table.getElementsByTagName("tr");
           for (i = 1; i < tr.length; i++) {
               doDisp = 0;
-              for (j = 0; j < 4; j++) {
+              for (j = 1; j < 4; j++) {
                   td = tr[i].getElementsByTagName("td")[j];
                   if (td) {
                     txtValue = td.textContent || td.innerText;

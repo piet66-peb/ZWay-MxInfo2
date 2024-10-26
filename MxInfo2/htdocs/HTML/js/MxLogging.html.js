@@ -11,7 +11,7 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V2.0.0 2024-06-21/peb
+//h Version:      V2.0.1 2024-08-10/peb
 //v History:      V1.0   2023-10-07/peb first version
 //v               V2.0.0 2024-06-04/peb [*]set logging parameter 
 //h Copyright:    (C) piet66 2020
@@ -27,8 +27,8 @@
 //b Constants
 //-----------
 var MODULE='MxLogging.html.js';
-var VERSION='V2.0.0';
-var WRITTEN='2024-06-21/peb';
+var VERSION='V2.0.1';
+var WRITTEN='2024-08-10/peb';
 
 //------------------
 //b Data Definitions
@@ -129,6 +129,7 @@ var messageFormats = [
 
 var instancesArray;
 var changesList = {};
+var api_change_pending;
 
 //-----------
 //b Functions
@@ -150,6 +151,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     filterInput.placeholder = ch_utils.buildMessage(6);
     filterInput.focus();
 
+    api_change_pending = null;
     function changeActive(instNo) {
     //---------------------------------------------------------------------
     // ZAutomation API:
@@ -159,6 +161,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
     // -implicite stop of the instance, if it is active
     // -start instance (again), if active=true is set
     //---------------------------------------------------------------------
+        if (api_change_pending) {
+            console.log('waiting for changeActive response from '+api_change_pending);
+            return;
+        }
         //request current instance configuration
         var url = '/ZAutomation/api/v1/instances/'+instNo;
         ch_utils.ajax_get(url, success_get);
@@ -170,18 +176,28 @@ document.addEventListener("DOMContentLoaded", function(event) {
             var activeNew = instancesArray[instNo].active;
             data.active = activeNew;
             //send changed instance configuration
+            api_change_pending = instNo;
             var url = '/ZAutomation/api/v1/instances/'+instNo;
-            ch_utils.ajax_put(url, JSON.stringify(data), success_put);
+            ch_utils.ajax_put(url, JSON.stringify(data), success_put, fail_put);
         }
 
         function success_put(response) {
+            //console.log(response);
+            api_change_pending = null;
             var instNo = response.data.id;
             var active = response.data.active;
+            var text;
             if (active === true) {
-                alert(ch_utils.buildMessage(7, instNo));
+                text = ch_utils.buildMessage(7, instNo);
             } else {
-                alert(ch_utils.buildMessage(8, instNo));
+                text = ch_utils.buildMessage(8, instNo);
             }
+            console.log(text);
+            alert(text);
+        }
+        function fail_put(status, statusText) {
+            api_change_pending = null;
+            alert(status+': '+statusText);
         }
     } //changeActive
 
@@ -191,6 +207,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
     // changing of special parameters in the instance configuration
     // -changing of the active flag doesn't start/stop the instance
     //---------------------------------------------------------------------
+        if (api_change_pending) {
+            console.log('waiting for changeLogging response from '+api_change_pending);
+            return;
+        }
+        api_change_pending = instNo;
         var loggingNew = instancesArray[instNo].logging;
         var url = [
             '/JS/Run/',
@@ -208,19 +229,26 @@ document.addEventListener("DOMContentLoaded", function(event) {
         ch_utils.ajax_get(url, success_get, fail_get, no_data_get);
 
         function success_get(response) {
+            //console.log(response);
+            api_change_pending = null;
+            var text;
             if (response === true) {
-                alert(ch_utils.buildMessage(9, instNo));
+                text = ch_utils.buildMessage(9, instNo);
             } else
             if (response === false) {
-                alert(ch_utils.buildMessage(10, instNo));
+                text = ch_utils.buildMessage(10, instNo);
             } else {
-                alert(ch_utils.buildMessage(11, instNo, response));
+                text = ch_utils.buildMessage(11, instNo, response);
             }
+            console.log(text);
+            alert(text);
         }
         function no_data_get(response) {
+            api_change_pending = null;
             alert(ch_utils.buildMessage(11, instNo, response));
         }
         function fail_get(status, statusText) {
+            api_change_pending = null;
             alert(status+': '+statusText);
         }
     } //changeLogging
@@ -251,6 +279,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
                     var column = id[0];
                     var instNo = id[1];
                     var checked = event.target.checked;
+                    if (api_change_pending) {
+                        console.log('waiting for changeActive response from '+api_change_pending);
+                        event.target.checked = checked ? false : true;
+                        return;
+                    }
                     changesList[instNo] = 'yes';
                     if (column === 'active') {
                         instancesArray[instNo].active = checked;

@@ -13,7 +13,7 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V2.9.0 2023-12-06/peb
+//h Version:      V2.9.0 2024-10-01/peb
 //v History:      V1.0   2018-12-15/peb first version
 //v               V1.3   2019-09-01/peb [+]class names to node info frames
 //v               V1.5   2019-10-11/peb [+]skip invalid devices
@@ -36,7 +36,7 @@
 //-----------
 var MODULE='ZwayConfiguration.html.js';
 var VERSION='V2.9.0';
-var WRITTEN='2023-12-06/peb';
+var WRITTEN='2024-10-01/peb';
 
 //----
 //Data
@@ -435,12 +435,20 @@ document.addEventListener("DOMContentLoaded", function(event) {
                     var cc159 = devices[device].instances[0].commandClasses[159];
                     if (cc159.data.supported.value) {
                        //add class name to NIF
-                        nif = cc159.data.secureNodeInfoFrame.value;
-                        nif.forEach(function(classId, ix)  {
-                            nif[ix] = classId+' '+classArray[classId];
-                        });
-                        lastNifTime = cc159.data.secureNodeInfoFrame.updateTime;
-                        cc159.data.secureNodeInfoFrame.updateTime = lastNifTime+' '+ch_utils.userTime(lastNifTime);
+                        if (typeof cc159.data.secureNodeInfoFrames.S2Unauthenticated !== 'undefined') {
+                            nif = cc159.data.secureNodeInfoFrames.S2Unauthenticated.value;
+                            nif.forEach(function(classId, ix)  {
+                                nif[ix] = classId+' '+classArray[classId];
+                            });
+                        }
+                        if (typeof cc159.data.secureNodeInfoFrames.S2Authenticated !== 'undefined') {
+                            nif = cc159.data.secureNodeInfoFrames.S2Authenticated.value;
+                            nif.forEach(function(classId, ix)  {
+                                nif[ix] = classId+' '+classArray[classId];
+                            });
+                        }
+                        lastNifTime = cc159.data.secureNodeInfoFrames.updateTime;
+                        cc159.data.secureNodeInfoFrames.updateTime = lastNifTime+' '+ch_utils.userTime(lastNifTime);
                     }
                 }
                 if (devices[device].instances[0].commandClasses.hasOwnProperty('91')) { //CentralScene
