@@ -13,7 +13,7 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V1.8 2023-07-03/peb
+//h Version:      V1.8 2024-11-09/peb
 //v History:      V1.0 2019-02-19/peb first version
 //v               V1.3 2020-05-15/peb [+] priority routes
 //v               V1.4 2020-05-16/peb [+] last used/failed routes
@@ -33,7 +33,7 @@
 //-----------
 var MODULE='Routes.html.js';
 var VERSION='V1.8';
-var WRITTEN='2023-07-03/peb';
+var WRITTEN='2024-11-09/peb';
 
 //------
 //b Data
@@ -700,7 +700,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 nodeTreeReverse[device].isRouting = devData.isRouting.value;
             }
 
+console.log(device);            
             neighbours.forEach(function(node, ix) {
+console.log('node='+node);            
                 if (nodeTreeReverse[node] === undefined) {
                     nodeTreeReverse[node] = {neighbours: [device*1]};
                 } else {
@@ -723,9 +725,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
             nodeNeighbors[device].neighbours.forEach( function(neighbor, ix) {
                 if (neighbor === 1) {
                     nodeNeighbors[device].neighbours[ix] = '1: ZWay Controller';
-                } else {
+                } else
+                //if (devices[neighbor].data.givenName.value) {
+                if (devices[neighbor]) {
                     nodeNeighbors[device].neighbours[ix] =
                         neighbor +': '+ devices[neighbor].data.givenName.value;
+                } else {
+                    nodeNeighbors[device].neighbours[ix] =
+                        neighbor +': undefined';
                 }
             });
 
