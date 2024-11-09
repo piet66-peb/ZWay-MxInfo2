@@ -15,7 +15,7 @@
    "maturity":"beta",
    "moduleName":"MxInfo2",
    "singleton":true,
-   "version":"1.8.0",
+   "version":"1.8.1",
    "options":{
       "fields":{
       }

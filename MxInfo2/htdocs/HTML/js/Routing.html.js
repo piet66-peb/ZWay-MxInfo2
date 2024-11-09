@@ -11,7 +11,7 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V1.0 2024-10-22/peb
+//h Version:      V1.0 2024-11-09/peb
 //v History:      V1.0 2022-04-16/peb first version
 //h Copyright:    (C) piet66 2020
 //h License:      http://opensource.org/licenses/MIT
@@ -26,7 +26,7 @@
 //-----------
 var MODULE='Routing.html.js';
 var VERSION='V1.0';
-var WRITTEN='2024-10-22/peb';
+var WRITTEN='2024-11-09/peb';
 
 //for priority routes:
 var HOPS = 4;
@@ -345,8 +345,12 @@ function prepareRoutesList(devices) {
                 var neighboursString = '';
                 for (var i = 0; i < countNeighbours; i++) {
                     nodeNum = nodeList[node].neighbours[i];
-                    nodeName = nodeList[nodeNum].givenName;
-                    neighboursString += nodeNum+': '+nodeName+'\n';
+                    if (nodeList[nodeNum]) {
+                        nodeName = nodeList[nodeNum].givenName;
+                        neighboursString += nodeNum+': '+nodeName+'\n';
+                    } else {
+                        neighboursString += nodeNum+': undefined\n';
+                    }
                 }
                 nodeList[node].neighboursString = neighboursString;
             }
@@ -582,9 +586,17 @@ function buildHTML() {
                 '" style="text-decoration:none" href="javascript:reqNeighbours('+
                 node+');">'+quest+'</a> ';
         }
+
+        col = undefined;
+        if (countNeighbours === 0) {
+            col = '#ff9933';
+        } else
+        if (neighboursString.indexOf('undefined') >= 0) {
+            col = '#ff9933';
+        }
         html += '<td title="'+neighboursString+'"headers="countNeighbours" align=center>'+
-                        (countNeighbours > 0 ? countNeighbours : 
-                            backcolor(countNeighbours, '#ff9933'))+
+                        (!col ? countNeighbours : 
+                                backcolor(countNeighbours, col))+
                          jscript+
                         '</td>';
         html += '<td headers="direction" align=center>'+direction+'</td>';
@@ -796,7 +808,7 @@ function reqNeighbours(node) {
     var textSuccess = ch_utils.buildMessage(20, node);
 
     console.log(url);
-    //alert(url);
+    alert(url);
     ch_utils.ajax_put(url, null, success, fail);
 
     function success(data) {
