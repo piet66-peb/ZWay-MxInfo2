@@ -13,7 +13,7 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V4.3 2023-10-12/peb
+//h Version:      V4.3 2024-11-20/peb
 //v History:      V1.0 2020-06-04/peb first version
 //v               V3.6 2020-12-05/peb [+]button 'configuration'
 //v               V4.1 2021-02-26/peb [*]signed parameter values
@@ -35,7 +35,7 @@
 //-----------
 var MODULE='DeviceParameters.html.js';
 var VERSION='V4.3';
-var WRITTEN='2023-10-12/peb';
+var WRITTEN='2024-11-20/peb';
 
 //------------------
 //b Data Definitions
@@ -2692,7 +2692,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             }
         }
     } //sendUrl
-
+/*
     document.getElementById('storeFile').addEventListener('click', function() {
         storeJSON(urlData, 'Data0.json');
 
@@ -2712,7 +2712,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     document.getElementById('loadFile').addEventListener('click', function() {
         toggleVisibleButtons(false);
     }, true);
-
+*/
     document.getElementById('Update').addEventListener('click', function() {
         update = true;
         startDatacollection();
@@ -2870,13 +2870,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
     function toggleVisibleButtons(bool) {
         if (bool) {
             ch_utils.buttonVisible('Update', true);
-            ch_utils.buttonVisible('storeFile', true);
-            ch_utils.buttonVisible('loadFile', true);
+            //ch_utils.buttonVisible('storeFile', true);
+            //ch_utils.buttonVisible('loadFile', true);
             ch_utils.buttonVisible('selectFile', false);
         } else {
             ch_utils.buttonVisible('Update', false);
-            ch_utils.buttonVisible('storeFile', false);
-            ch_utils.buttonVisible('loadFile', false);
+            //ch_utils.buttonVisible('storeFile', false);
+            //ch_utils.buttonVisible('loadFile', false);
             ch_utils.buttonVisible('selectFile', true);
         }
     } //toggleVisibleButtons
@@ -2909,8 +2909,8 @@ function langTexts() {
     ch_utils.buttonText('label3', 3);
     ch_utils.buttonText('Print', 7);
     ch_utils.buttonText('Update', 8);
-    ch_utils.buttonText('storeFile', 15);
-    ch_utils.buttonText('loadFile', 16);
+    //ch_utils.buttonText('storeFile', 15);
+    //ch_utils.buttonText('loadFile', 16);
     toggleVisibleButtons(true);
     ch_utils.buttonText('configuration1', 17);
     ch_utils.buttonText('configuration2', 17);
