@@ -12,7 +12,7 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V2.0.0 2024-06-10/peb
+//h Version:      V2.0.0 2024-11-25/peb
 //v History:      V1.0   2019-02-08/peb first version
 //v               V1.3   2019-08-20/peb [-]test for user login with ZAutomation
 //v                                        removed, doesn't work in 3.0.0 any more
@@ -23,7 +23,7 @@
 //h
 //h-------------------------------------------------------------------------------
 
-/*jshint esversion: 6 */
+/*jshint esversion: 5 */
 /*jshint evil: true */
 /*globals $, saveObject, ch_utils */
 'use strict';
@@ -33,7 +33,7 @@
 //-----------
 var MODULE='ConfigJson.html.js';
 var VERSION='V2.0.0';
-var WRITTEN='2024-06-10/peb';
+var WRITTEN='2024-11-25/peb';
 
 //------------------
 //b Data Definitions
