@@ -18,6 +18,12 @@ Z-Way.
 
 Download the package from the Z-Way App Store. No installation necessary.
 
+or with wget:
+```sh
+url=https://github.com/piet66-peb/ZWay-MxInfo2/raw/refs/heads/main/download_MxInfo2.bash
+cd /tmp; wget -q -O - $url | sudo bash
+
+```
 ## License: MIT
 
 Copyright © 2024 piet66
