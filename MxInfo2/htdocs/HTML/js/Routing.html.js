@@ -11,7 +11,7 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V1.0 2024-11-09/peb
+//h Version:      V1.0 2025-02-22/peb
 //v History:      V1.0 2022-04-16/peb first version
 //h Copyright:    (C) piet66 2020
 //h License:      http://opensource.org/licenses/MIT
@@ -26,7 +26,7 @@
 //-----------
 var MODULE='Routing.html.js';
 var VERSION='V1.0';
-var WRITTEN='2024-11-09/peb';
+var WRITTEN='2025-02-22/peb';
 
 //for priority routes:
 var HOPS = 4;
@@ -149,8 +149,8 @@ var messageFormats = [
         en: 'Direction'
     },
     {
-        de: 'Nachbarn',
-        en: 'Neighbours'
+        de: 'Nach<br> barn',
+        en: 'Neigh<br> bours'
     },
     {
         de: 'Pakete',
@@ -195,6 +195,10 @@ var messageFormats = [
     {
         de: 'Batteriegerät',
         en: 'Battery device'
+    },
+    {   //15
+        de: 'Letztes<br>Paket',
+        en: 'Last<br>Packet'
     },
 ];
 
@@ -300,7 +304,10 @@ function buildNodeList(devices) {
                             isBattery: !isListening && !isFlirs,
                             countNeighbours: countNeighbours,
                             neighbours: neighbours,
-                            neighboursString: ''};
+                            neighboursString: '',
+                            lastReceived: devData.lastReceived.updateTime,
+                            lastSend: devData.lastSend.updateTime,
+        };
         var priRoutes = devData.priorityRoutes;
         Object.keys(priRoutes).forEach(function(target, ix) {
             if (priRoutes[target] && typeof priRoutes[target] === 'object') {
@@ -566,7 +573,8 @@ function buildHTML() {
                       countUsedRoutes, usedRoutes, delivered, failed,
                       mainRoute, mainRouteRatio, 
                       priorityRoute, prioritySpeed,
-                      usedRoutesString, usedFailedString, neighboursString) {
+                      usedRoutesString, usedFailedString, neighboursString,
+                      lastReceived_Send) {
         html = '';
         html += '<tr>';
         html += '<td headers="node" align=center>'+node+'</td>';
@@ -651,6 +659,10 @@ function buildHTML() {
         }
         html += '<td headers="SetPriorityRoute" align=center>'+jscript+'</td>';
 
+        html += '<td headers="lastReceived_Send" align=center>'+
+            ch_utils.userTime(lastReceived_Send)+
+            '</td>';
+
         html += '</tr>\n';
         return html;
     } //nextLine
@@ -673,6 +685,7 @@ function buildHTML() {
     html += '<th id="priorityRoute"> '+ch_utils.buildMessage(ix_selectTexts+11)+' </th>';
     html += '<th id="prioritySpeed"> '+ch_utils.buildMessage(ix_selectTexts+13)+' </th>';
     html += '<th id="SetPriorityRoute"> '+ch_utils.buildMessage(ix_selectTexts+12)+' </th>';
+    html += '<th id="lastReceived_Send"> '+ch_utils.buildMessage(ix_selectTexts+15)+' </th>';
     html += '</tr></thead>';
     html += '<tbody>\n';
 
@@ -729,7 +742,8 @@ function buildHTML() {
                   priSpeed,
                   countPackets ? routesTree[source+'_'+target].usedRoutesString : '',
                   countPackets ? routesTree[source+'_'+target].usedFailedString : '',
-                  nodeList[source].neighboursString
+                  nodeList[source].neighboursString,
+                  nodeList[source].lastReceived
             );
 
             //outgoing packets
@@ -778,7 +792,8 @@ function buildHTML() {
                   priSpeed,
                   countPackets ? routesTree[source+'_'+target].usedRoutesString : '',
                   countPackets ? routesTree[source+'_'+target].usedFailedString : '',
-                  nodeList[source].neighboursString
+                  nodeList[source].neighboursString,
+                  nodeList[target].lastSend
             );
         }
     });
