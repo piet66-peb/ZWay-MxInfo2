@@ -13,7 +13,7 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V2.9.0 2024-10-01/peb
+//h Version:      V2.9.0 2025-03-15/peb
 //v History:      V1.0   2018-12-15/peb first version
 //v               V1.3   2019-09-01/peb [+]class names to node info frames
 //v               V1.5   2019-10-11/peb [+]skip invalid devices
@@ -36,7 +36,7 @@
 //-----------
 var MODULE='ZwayConfiguration.html.js';
 var VERSION='V2.9.0';
-var WRITTEN='2024-10-01/peb';
+var WRITTEN='2025-03-15/peb';
 
 //----
 //Data
@@ -285,13 +285,19 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     function buildSurveyList(vData) {
         surveyList = {};
-        var devices = vData.devices;
         var givenName;
+
+        var controller = vData.controller;
         surveyList["0"] = 'Controller Info';
         surveyList["0"+clickMark] = "javascript:printDevice('0');";
+        var devData = vData.controller.data;
+        //reorder data part
+        vData.controller.data = sortObj(devData);
+
+        var devices = vData.devices;
         Object.keys(devices).forEach(function(device, ix) {
             if (device) {
-                var devData = devices[device].data;
+                devData = devices[device].data;
 
                 //reorder data part
                 vData.devices[device].data = sortObj(devData);
@@ -383,6 +389,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
                     if (cc128.data.supported.value) {
                         lastTime = cc128.data.last.updateTime;
                         cc128.data.last.updateTime = lastTime+' '+ch_utils.userTime(lastTime);
+                        lastTime = cc128.data.lastChange.updateTime;
+                        cc128.data.lastChange.updateTime = lastTime+' '+ch_utils.userTime(lastTime);
                     }
                     add = ' (Flirs)';
                 } else
@@ -402,6 +410,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
                         cc132.data.lastWakeup.updateTime = lastWakeupTime+' '+ch_utils.userTime(lastWakeupTime);
                         cc132.data.lastSleep.updateTime = lastSleepTime+' '+ch_utils.userTime(lastSleepTime);
                         cc128.data.last.updateTime = lastTime+' '+ch_utils.userTime(lastTime);
+                        lastTime = cc128.data.lastChange.updateTime;
+                        cc128.data.lastChange.updateTime = lastTime+' '+ch_utils.userTime(lastTime);
 
                         var cc128_history = cc128.data.history;
                         Object.keys(cc128_history).forEach(function(level, ix) {
@@ -761,6 +771,12 @@ function apiDevice(device) {
     ch_utils.ajax_get(url, success);
     function success (buffer) {
         buffer.data.updateTime = buffer.data.updateTime+' '+ch_utils.userTime(buffer.data.updateTime);
+        if(buffer.data.hasOwnProperty('metrics') &&
+           buffer.data.metrics.hasOwnProperty('modificationTime')) {
+            buffer.data.metrics.modificationTime = 
+                buffer.data.metrics.modificationTime+' '+
+                ch_utils.userTime(buffer.data.metrics.modificationTime);
+        }
 
         //print
         $('#json-renderer2').jsonViewer(buffer, {

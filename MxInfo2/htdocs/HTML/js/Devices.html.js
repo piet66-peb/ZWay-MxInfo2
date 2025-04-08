@@ -11,7 +11,7 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V1.0 2024-05-22/peb
+//h Version:      V1.0 2025-03-10/peb
 //v History:      V1.0 2022-04-16/peb first version
 //h Copyright:    (C) piet66 2020
 //h License:      http://opensource.org/licenses/MIT
@@ -27,7 +27,7 @@
 //-----------
 var MODULE='Devices.html.js';
 var VERSION='V1.0';
-var WRITTEN='2024-05-22/peb';
+var WRITTEN='2025-03-10/peb';
 
 //------------------
 //b Data Definitions
@@ -220,7 +220,7 @@ function processDevices(devices) {
         var item = {id: d.id,
                     creatorId: d.creatorId,
                     title: d.metrics.title,
-                    updateTime: d.updateTime,
+                    updateTime: d.metrics.modificationTime || d.updateTime,
                     instance: null,
                     deviceType: d.deviceType,
                     locationName: d.locationName,

@@ -11,7 +11,7 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V1.9 2024-01-08/peb
+//h Version:      V1.9 2025-03-12/peb
 //v History:      V1.0 2020-06-06/peb first version
 //v               V1.7 2021-02-21/peb [+]nextWakeup
 //v               V1.8 2021-03-13/peb [x]lost per month
@@ -30,7 +30,7 @@
 //-----------
 var MODULE='BatteryStates.html.js';
 var VERSION='V1.9';
-var WRITTEN='2024-01-08/peb';
+var WRITTEN='2025-03-12/peb';
 
 //------------------
 //b Data Definitions
@@ -91,8 +91,8 @@ var messageFormats = [
         en: 'Name'
     },
     {
-        de: 'Uhrzeit<br>Batterie',
-        en: 'Timestamp<br>Battery'
+        de: 'Uhrzeit<br>Batterie<br>*=Erstmeldung',
+        en: 'Timestamp<br>Battery<br>*=first report'
     },
     {
         de: 'Ladung',
@@ -123,6 +123,7 @@ var messageFormats = [
 var devicesConfig;
 var devicesArray;
 var manufacturerArray;
+var modificationTimes = {};
 
 //-----------
 //b Functions
@@ -146,10 +147,25 @@ document.addEventListener("DOMContentLoaded", function(event) {
         ch_utils.displayMessage(3);
         var url = '/ZWaveAPI/Data/0';
         ch_utils.ajax_get(url, success);
-        function success (data) {
+        function success(data) {
             processConfig(data.devices);
         }
     } //getDeviceList
+
+    function getModificationTime(node, doHTML) {
+        var url = '/ZAutomation/api/v1/devices/ZWayVDev_zway_'+node+'-0-128/metrics/modificationTime';
+        ch_utils.ajax_get(url, success, fail, no_data);
+        function success(data) {
+            modificationTimes[node] = data.data;
+            buildHTML(doHTML);
+        }
+        function fail() {
+            buildHTML(doHTML);
+        }
+        function no_data() {
+            buildHTML(doHTML);
+        }
+    } //getModificationTime
 
     function processConfig(devices) {
         ch_utils.displayMessage(4);
@@ -157,57 +173,70 @@ document.addEventListener("DOMContentLoaded", function(event) {
         devicesConfig = {};
         devicesArray = {};
         manufacturerArray = {};
-        Object.keys(devices).forEach(function(device, ix) {
+
+        //all nodes
+        var nodeNumbers = Object.keys(devices);
+
+        //filter batteries
+        function checkRealBattery(device) {
             if (device > 1) {
-                //store battery (128):
                 if (devices[device].instances["0"].commandClasses["128"]) {
                     if (!devices[device].data.isListening.value) {
-
-                    devicesConfig[device] = devices[device].instances["0"].commandClasses["128"]
-                                            .data.history;
-
-                    //store device info
-                    var givenName = devices[device].data.givenName.value;
-                    var manufacturerId = devices[device].data.manufacturerId.value || 0;
-                    var vendorString = devices[device].data.vendorString.value;
-                    var lastReceived = devices[device].data.lastReceived.updateTime;
-                    var wakeupInterval, nextWakeup;
-                    if (devices[device].instances["0"].commandClasses["132"]) {
-                        var interval = devices[device].instances["0"].commandClasses["132"]
-                                            .data.interval.value;
-                        wakeupInterval = Math.round(interval/3600*10)/10;
-                        if (interval > 0) {
-                            var lastSleep = devices[device].instances["0"].commandClasses["132"]
-                                            .data.lastSleep.value;
-                            var lastWakeup = devices[device].instances["0"].commandClasses["132"]
-                                            .data.lastWakeup.value;
-                            nextWakeup = Math.max(lastWakeup, lastSleep) + interval;
-                            nextWakeup = nextTime(nextWakeup);
-                        }
+                        return device;
                     }
-
-                    var item = {givenName: givenName,
-                                manufacturerId: manufacturerId,
-                                vendorString: vendorString,
-                                wakeupInterval: wakeupInterval,
-                                lastReceived: lastReceived
-                               };
-                    if (nextWakeup) {
-                        item.wakeupInterval = item.wakeupInterval+nextWakeup;
-                    }
-                    devicesArray[device] = item;
-
-                    if (!manufacturerArray[manufacturerId] || vendorString) {
-                        manufacturerArray[manufacturerId] = vendorString;
-                    }
-                    }
-               }
+                }
             }
+        }
+        nodeNumbers = nodeNumbers.filter(checkRealBattery);
+
+        //request last modification times for all batteries
+        nodeNumbers.forEach(function(device, ix) {
+            getModificationTime(device, ix === nodeNumbers.length-1);
         });
 
-        ch_utils.buttonVisible('json-renderer', true);
-        ch_utils.displayMessage(5);
-        buildHTML();
+        //store device infos for all batteries
+        nodeNumbers.forEach(function(device, ix) {
+            devicesConfig[device] = devices[device].instances["0"].commandClasses["128"]
+                                    .data.history;
+
+            var lastChange = devices[device].instances["0"].commandClasses["128"].
+                                    data.lastChange.value;
+
+            var givenName = devices[device].data.givenName.value;
+            var manufacturerId = devices[device].data.manufacturerId.value || 0;
+            var vendorString = devices[device].data.vendorString.value;
+            var lastReceived = devices[device].data.lastReceived.updateTime;
+            var wakeupInterval, nextWakeup;
+            if (devices[device].instances["0"].commandClasses["132"]) {
+                var interval = devices[device].instances["0"].commandClasses["132"]
+                                    .data.interval.value;
+                wakeupInterval = Math.round(interval/3600*10)/10;
+                if (interval > 0) {
+                    var lastSleep = devices[device].instances["0"].commandClasses["132"]
+                                    .data.lastSleep.value;
+                    var lastWakeup = devices[device].instances["0"].commandClasses["132"]
+                                    .data.lastWakeup.value;
+                    nextWakeup = Math.max(lastWakeup, lastSleep) + interval;
+                    nextWakeup = nextTime(nextWakeup);
+                }
+            }
+
+            var item = {givenName: givenName,
+                        manufacturerId: manufacturerId,
+                        vendorString: vendorString,
+                        wakeupInterval: wakeupInterval,
+                        lastReceived: lastReceived,
+                        lastChange: lastChange
+                       };
+            if (nextWakeup) {
+                item.wakeupInterval = item.wakeupInterval+nextWakeup;
+            }
+            devicesArray[device] = item;
+
+            if (!manufacturerArray[manufacturerId] || vendorString) {
+                manufacturerArray[manufacturerId] = vendorString;
+            }
+        });
     } //processConfig
 
     function view(str) {
@@ -229,7 +258,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
         return color;
     } //setCol
 
-    function buildHTML() {
+    function buildHTML(doHTML) {
+        if (!doHTML) {return;}
+
+        ch_utils.buttonVisible('json-renderer', true);
+        ch_utils.displayMessage(5);
+
         function nextLine(color, col1, col2, col3, col4, col5, col6, col7, col8, col9, col10, col11) {
             var c1 = "<font color='"+color+"'>";
             var c2 = "<\/font>";
@@ -242,7 +276,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             html += '<td headers="name" align=left>'+c1+view(col4)+c2+'</td>';
             html += '<td headers="wakeup" align=center>'+c1+view(col5)+c2+'</td>';
             html += '<td headers="lastReceived" align=center>'+c1+view(col6)+c2+'</td>';
-            html += '<td headers="date" align=center>'+c1+view(col8)+c2+'</td>';
+            html += '<td headers="date" align=right>'+c1+view(col8)+c2+'</td>';
             if (col9 <= 35) {
                 cx1 = "<b><font color='red'>";
                 cx2 = "<\/font><\/b>";
@@ -337,40 +371,51 @@ document.addEventListener("DOMContentLoaded", function(event) {
                     ]);
                     html += nextLine('red', a[0][1], a[0][2], a[0][3], a[0][4], a[0][5], a[0][6], 
                                      '', '', '', '', '');
-                } else {
-
-                //sort by timestamp descendent
-                a.sort(function(a, b){return b[7]-a[7];});
-
-                //compute level difference for device
-                var len = a.length;
-                var i, lost, lostM;
-                var secsPerMonth = 30*24*60*60;
-                for (i = len - 1; i >= 0; i--) {
-                    if (i === len - 1) {
-                        a[i].push('');
-                    } else {
-                        lost = a[i+1][9] - a[i][9];
-                        lostM = lost * secsPerMonth / (a[i][7]  - a[i+1][7]);
-                        a[i][10] = (Math.round(lostM*10)/10);
-                        console.log('#'+device+': '+
-                                    'lostM='+lostM+'=('+a[i+1][9]+'-'+a[i][9]+')*'+secsPerMonth+
-                                    '/('+a[i][7]+'-'+a[i+1][7]+')');
-                        if (lostM <= 0) {
-                            a[i][10] = '';
+                } //a.length === 0
+                else {
+                    //sort by timestamp descendent
+                    a.sort(function(a, b){return b[7]-a[7];});
+    
+                    //compute level difference for device
+                    var len = a.length;
+                    var i, lost, lostM;
+                    var secsPerMonth = 30*24*60*60;
+                    for (i = len - 1; i >= 0; i--) {
+                        if (i === 0) {
+                            //exchange timestamp by last modificationTime:
+                            var modTimeLast = modificationTimes[device];
+                            if (modTimeLast && modTimeLast !== a[0][7]) {
+                                var modTimeLastUser = ch_utils.userTime(modTimeLast);
+                                //console.log('#### '+device+': '+a[0][8]+' >> '+modTimeLastUser);
+                                a[0][7] = modTimeLast;
+                                a[0][8] += '<br>*'+ch_utils.userTime(modTimeLast);
+                                //a[0][8] += '<br>!'+ch_utils.userTime(devicesArray[device].lastChange);
+                            }
                         }
-                        a[i][11] = (Math.round(lost*10)/10);
+                        if (i === len - 1) {
+                            a[i].push('');
+                        } else {
+                            lost = a[i+1][9] - a[i][9];
+                            lostM = lost * secsPerMonth / (a[i][7]  - a[i+1][7]);
+                            a[i][10] = (Math.round(lostM*10)/10);
+                            console.log('#'+device+': '+
+                                        'lostM='+lostM+'=('+a[i+1][9]+'-'+a[i][9]+')*'+secsPerMonth+
+                                        '/('+a[i][7]+'-'+a[i+1][7]+')');
+                            if (lostM <= 0) {
+                                a[i][10] = '';
+                            }
+                            a[i][11] = (Math.round(lost*10)/10);
+                        }
                     }
-                }
-
-                //build lines for device
-                html += nextLine('black', a[0][1], a[0][2], a[0][3], a[0][4], a[0][5], a[0][6], '',
-                                  a[0][8], a[0][9], a[0][10], a[0][11]);
-                for (i = 1; i < len; i++) {
-                    html += nextLine('grey', '', '', '', '', '', '', '',
-                                  a[i][8], a[i][9], a[i][10], a[i][11]);
-                }
-            }
+    
+                    //build lines for device
+                    html += nextLine('black', a[0][1], a[0][2], a[0][3], a[0][4], a[0][5], a[0][6], '',
+                                      a[0][8], a[0][9], a[0][10], a[0][11]);
+                    for (i = 1; i < len; i++) {
+                        html += nextLine('grey', '', '', '', '', '', '', '',
+                                      a[i][8], a[i][9], a[i][10], a[i][11]);
+                    }
+                } //else a.length > 0
             }
         }); //device
 
