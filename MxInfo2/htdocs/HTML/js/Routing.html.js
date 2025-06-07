@@ -11,7 +11,7 @@
 //h Resources:
 //h Platforms:    independent
 //h Authors:      peb piet66
-//h Version:      V1.0 2025-02-22/peb
+//h Version:      V1.0 2025-05-14/peb
 //v History:      V1.0 2022-04-16/peb first version
 //h Copyright:    (C) piet66 2020
 //h License:      http://opensource.org/licenses/MIT
@@ -26,7 +26,7 @@
 //-----------
 var MODULE='Routing.html.js';
 var VERSION='V1.0';
-var WRITTEN='2025-02-22/peb';
+var WRITTEN='2025-05-14/peb';
 
 //for priority routes:
 var HOPS = 4;
@@ -160,7 +160,7 @@ var messageFormats = [
         de: 'Routen',
         en: 'Routes'
     },
-    {
+    {//6
         de: 'Erfolg',
         en: 'Success'
     },
@@ -199,6 +199,10 @@ var messageFormats = [
     {   //15
         de: 'Letztes<br>Paket',
         en: 'Last<br>Packet'
+    },
+    {   //16
+        de: 'Explore<br>Frames',
+        en: 'Explore<br> Frames'
     },
 ];
 
@@ -365,6 +369,9 @@ function prepareRoutesList(devices) {
             //create empty routesTree
             routesTree[node+'_'+1] = {
                 countPackets: 0,
+                countPackets_singlecasts: 0,
+                countPackets_exploreframes: 0,
+                countPackets_others: 0,
                 countUsedRoutes: 0,
                 usedRoutes: {},
                 delivered: 0,
@@ -502,7 +509,18 @@ function buildRoutesList(packets) {
                 } else {
                     s_t = source+'_'+target;
                     routesTree[s_t].countPackets++;
-    
+
+                    //singlecasts
+                    if (packets[packet].frameType === 'singlecast') {
+                        routesTree[s_t].countPackets_singlecasts++;
+                    } else
+                    //explore frames
+                    if (packets[packet].frameType === 'Explore Frame') {
+                        routesTree[s_t].countPackets_exploreframes++;
+                    } else {
+                        routesTree[s_t].countPackets_others++;
+                    }
+
                     routesTree[s_t].delivered++;
                     hopsDelivered = routeString(source, target, packets[packet].hops, false);
                     if (typeof routesTree[s_t].usedRoutes[hopsDelivered] === 'undefined') {
@@ -574,7 +592,8 @@ function buildHTML() {
                       mainRoute, mainRouteRatio, 
                       priorityRoute, prioritySpeed,
                       usedRoutesString, usedFailedString, neighboursString,
-                      lastReceived_Send) {
+                      lastReceived_Send,
+                      explframes) {
         html = '';
         html += '<tr>';
         html += '<td headers="node" align=center>'+node+'</td>';
@@ -616,6 +635,9 @@ function buildHTML() {
         html += '<td headers="delivered" align=center>'+
                         (delivered !== countPackets ? delivered : 
                         backcolor(delivered, 'lightgreen'))+
+                        '</td>';
+        html += '<td headers="explframes" align=center>'+
+                        (explframes ? explframes : '')+
                         '</td>';
         html += '<td title="'+usedFailedString+'"headers="failed" align=center>'+
                         (failed === 0 ? '' : 
@@ -679,6 +701,7 @@ function buildHTML() {
     html += '<th id="countPackets"> '+ch_utils.buildMessage(ix_selectTexts+4)+' </th>';
     html += '<th id="countUsedRoutes"> '+ch_utils.buildMessage(ix_selectTexts+5)+' </th>';
     html += '<th id="delivered"> '+ch_utils.buildMessage(ix_selectTexts+6)+' </th>';
+    html += '<th id="explframes"> '+ch_utils.buildMessage(ix_selectTexts+16)+' </th>';
     html += '<th id="failed"> '+ch_utils.buildMessage(ix_selectTexts+8)+' </th>';
     html += '<th id="mainRoute"> '+ch_utils.buildMessage(ix_selectTexts+9)+' </th>';
     html += '<th id="mainRouteRatio"> '+ch_utils.buildMessage(ix_selectTexts+10)+' </th>';
@@ -690,7 +713,7 @@ function buildHTML() {
     html += '<tbody>\n';
 
     var source, target, priRoute, priSpeed, countPackets,
-        mainRouteRatio, mainRouteUsed, delivered;
+        mainRouteRatio, mainRouteUsed, delivered, explframes;
     mainRouteRatioSum = 0;
     mainRouteRatioCount = 0;
     Object.keys(nodeList).forEach(function(node, ix) {
@@ -722,6 +745,7 @@ function buildHTML() {
                 });
                 routesTree[source+'_'+target].usedRoutesString = usedRoutesString;
             }
+            explframes = routesTree[source+'_'+target].countPackets_exploreframes;
 
             html += nextLine(
                   node,
@@ -743,7 +767,8 @@ function buildHTML() {
                   countPackets ? routesTree[source+'_'+target].usedRoutesString : '',
                   countPackets ? routesTree[source+'_'+target].usedFailedString : '',
                   nodeList[source].neighboursString,
-                  nodeList[source].lastReceived
+                  nodeList[source].lastReceived,
+                  explframes ? explframes : ''
             );
 
             //outgoing packets
